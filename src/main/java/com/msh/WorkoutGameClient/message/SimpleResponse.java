@@ -4,17 +4,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
-public class SimpleMessage {
+@Getter
+@Setter
+public class SimpleResponse<T> {
     String from;
     String text;
+    T response;
 
-    public SimpleMessage() {
+    public SimpleResponse() {
 
     }
 
-    public SimpleMessage(String from, String text) {
+    public SimpleResponse(String from, String text, T response) {
         this.from = from;
         this.text = text;
+        this.response = response;
     }
 }

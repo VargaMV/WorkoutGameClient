@@ -1,19 +1,18 @@
 package com.msh.WorkoutGameClient.config;
 
 import com.msh.WorkoutGameClient.message.Message;
-import com.msh.WorkoutGameClient.message.MsgType;
-import com.msh.WorkoutGameClient.message.SimpleMessage;
+import com.msh.WorkoutGameClient.message.MessageType;
+import com.msh.WorkoutGameClient.message.SimpleResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.stomp.*;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 
 public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     private final Logger logger = LogManager.getLogger(MyStompSessionHandler.class);
-    private String name;
+    private final String name;
 
     public MyStompSessionHandler(String name) {
         this.name = name;
@@ -41,17 +40,18 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public Type getPayloadType(StompHeaders stompHeaders) {
-        return SimpleMessage.class;
+        return SimpleResponse.class;
     }
 
     @Override
     public void handleFrame(StompHeaders stompHeaders, Object payload) {
-        SimpleMessage msg = (SimpleMessage) payload;
-        logger.info("Received : " + msg.getText() + " from : " + msg.getFrom());
+        SimpleResponse msg = (SimpleResponse) payload;
+        logger.info(msg.getFrom() + " : " + msg.getText());
+        logger.info("Response:" + msg.getResponse());
     }
 
     Message joinMsg() {
-        return new Message(MsgType.JOIN, name, "I want in!");
+        return new Message(MessageType.JOIN, name, "I want in!");
     }
 
 }
