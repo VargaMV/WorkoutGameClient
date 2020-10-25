@@ -27,7 +27,7 @@ public class ActionBoard extends JPanel {
         occupyButton.setBounds(10, 10, 80, 30);
         occupyButton.addActionListener(e -> {
             updateButtons();
-            wsm.sendOccupy();
+            //wsm.sendOccupy();
         });
         occupyButton.addActionListener(listeners.get("occupy"));
         add(occupyButton);
