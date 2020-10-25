@@ -87,8 +87,9 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
 
         if (gui != null && playerSet && gameSet && !(msg.getFrom().equals(name) && stompHeaders.getDestination().equals("/public/map"))) {
-            ((MainFrame) gui).switchToMain();
             ((MainFrame) gui).updateFrame();
+            ((MainFrame) gui).switchToMain();
+
         }
     }
 

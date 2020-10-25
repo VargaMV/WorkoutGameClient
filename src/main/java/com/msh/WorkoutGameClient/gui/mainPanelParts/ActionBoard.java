@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
+import com.msh.WorkoutGameClient.logic.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
@@ -9,33 +10,38 @@ import java.util.Map;
 
 public class ActionBoard extends JPanel {
 
-    /*private final Game game;
+    private final Game game;
+    private WebSocketManager wsm;
 
     JButton occupyButton;
     JLabel messageLabel;
 
-    public ActionBoard(Game game, Map<String, ActionListener> listeners) {
+    public ActionBoard(Game game, WebSocketManager wsm, Map<String, ActionListener> listeners) {
         this.game = game;
+        this.wsm = wsm;
         setLayout(null);
         setBounds(0, 500, 500, 120);
         setBackground(Color.BLUE);
 
         occupyButton = new JButton("Occupy");
         occupyButton.setBounds(10, 10, 80, 30);
-        occupyButton.addActionListener(e -> updateButtons());
+        occupyButton.addActionListener(e -> {
+            updateButtons();
+            wsm.sendOccupy();
+        });
         occupyButton.addActionListener(listeners.get("occupy"));
         add(occupyButton);
 
-        JButton evolveButton = new JButton("Evolve");
+        /*JButton evolveButton = new JButton("Evolve");
         evolveButton.setBounds(10, 50, 80, 30);
         evolveButton.addActionListener(listeners.get("evolve"));
-        add(evolveButton);
+        add(evolveButton);*/
 
-        JTextField moneyInput = new JTextField();
+        /*JTextField moneyInput = new JTextField();
         moneyInput.setBounds(210, 10, 40, 30);
-        add(moneyInput);
+        add(moneyInput);*/
 
-        JButton convertButton = new JButton("Convert");
+        /*JButton convertButton = new JButton("Convert");
         convertButton.setBounds(110, 10, 80, 30);
         convertButton.addActionListener(listeners.get("add"));
         convertButton.addActionListener(e -> {
@@ -59,7 +65,7 @@ public class ActionBoard extends JPanel {
             }
 
         });
-        add(convertButton);
+        add(convertButton);*/
 
         messageLabel = new JLabel("");
         messageLabel.setBounds(260, 10, 200, 30);
@@ -70,5 +76,5 @@ public class ActionBoard extends JPanel {
 
     public void updateButtons() {
         occupyButton.setEnabled(game.amIWorthy());
-    }*/
+    }
 }

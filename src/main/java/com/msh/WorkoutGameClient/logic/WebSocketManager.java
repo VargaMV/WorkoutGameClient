@@ -45,6 +45,10 @@ public class WebSocketManager {
         session.send("/app/action/move", new MoveMessage(MessageType.MOVE, game.getMe().getName(), "I just moved!", from, to));
     }
 
+    public void sendOccupy(Coordinate field) {
+        //session.send("/app/action/occupy", new)
+    }
+
     public void setGUI(JFrame gui) {
         this.gui = gui;
     }

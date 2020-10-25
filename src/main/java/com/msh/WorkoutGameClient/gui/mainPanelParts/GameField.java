@@ -16,15 +16,17 @@ public class GameField extends JPanel {
     private final Game game;
     private ActionListener listener;
     private WebSocketManager wsm;
+    private JLabel posLabel;
 
     public GameField(Game game, WebSocketManager wsm) {
         this.game = game;
         this.wsm = wsm;
+        posLabel = new JLabel();
         setLayout(null);
         setBounds(0, 0, 500, 500);
         setBackground(Color.GRAY);
         //drawMap();
-        //listener = e -> System.out.println("MoveListener needs to be set");
+        listener = e -> System.out.println("MoveListener needs to be set");
 
     }
 
@@ -55,7 +57,7 @@ public class GameField extends JPanel {
                 button.setFocusPainted(false);
                 int finalJ = j;
                 int finalI = i;
-                //button.addActionListener(listener);
+                button.addActionListener(listener);
                 button.addActionListener(e -> {
                     Coordinate prevPos = game.getMe().getPosition();
                     Coordinate newPos = new Coordinate(finalI, finalJ);
@@ -80,7 +82,10 @@ public class GameField extends JPanel {
                 if (pos.distance(i, j, false) > 1) {
                     button.setEnabled(false);
                 } else if (pos.distance(i, j, false) == 1) {
-                    button.setBorderPainted(true);
+                    if (fields[i][j].getPlayersOnField().size() > 0) {
+                        button.setBorderPainted(true);
+                        button.setBorder(BorderFactory.createLineBorder(fields[i][j].getPlayersOnField().get(0).getAwtColor(), 3));
+                    }
                     if (game.getMe().getCurrentScore() > 0) {
                         button.setEnabled(false);
                     } else {
@@ -95,7 +100,6 @@ public class GameField extends JPanel {
             }
         }
 
-        JLabel posLabel = new JLabel();
         posLabel.setText(String.format("Current position: (%d, %d)", posX, posY));
         posLabel.setBounds(20, 10, 200, 30);
         add(posLabel);
