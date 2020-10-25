@@ -2,6 +2,7 @@ package com.msh.WorkoutGameClient.logic;
 
 import com.msh.WorkoutGameClient.config.MyStompSessionHandler;
 import com.msh.WorkoutGameClient.gui.MainFrame;
+import com.msh.WorkoutGameClient.model.Game;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
@@ -16,12 +17,16 @@ import java.util.Scanner;
 @Component
 public class ClientRunner implements CommandLineRunner {
 
+    private Game game;
     private JFrame mainFrame;
     private WebSocketManager webSocketManager;
 
     @Override
     public void run(String... args) throws Exception {
-        webSocketManager = new WebSocketManager();
-        mainFrame = new MainFrame(webSocketManager);
+        game = new Game();
+        webSocketManager = new WebSocketManager(game);
+        mainFrame = new MainFrame(game, webSocketManager);
+
+        webSocketManager.setGUI(mainFrame);
     }
 }

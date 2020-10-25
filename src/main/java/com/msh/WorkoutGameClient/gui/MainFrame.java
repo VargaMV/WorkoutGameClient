@@ -1,20 +1,23 @@
 package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.logic.WebSocketManager;
+import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
 
+    private Game game;
     private final Container containerPanel;
     private final JPanel loginPanel;
     private final JPanel mainPanel;
     /*private final JPanel stockPanel;
     private final JPanel workoutPanel;*/
     private final CardLayout cardLayout;
+    private WebSocketManager wsm;
 
-    public MainFrame(WebSocketManager wsm) {
+    public MainFrame(Game game, WebSocketManager wsm) {
 
         super("Workout Game Client");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,9 +25,11 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
+        this.game = game;
         cardLayout = new CardLayout();
         this.loginPanel = new LoginPanel(wsm);
-        this.mainPanel = new MainPanel();
+        this.mainPanel = new MainPanel(game, wsm);
+        this.wsm = wsm;
         /*this.stockPanel = new StockPanel(game);
         this.workoutPanel = new WorkoutPanel(game);*/
 
@@ -43,6 +48,10 @@ public class MainFrame extends JFrame {
 
         add(containerPanel);
         setVisible(true);
+    }
+
+    public void updateFrame() {
+        ((MainPanel) mainPanel).updateMap();
     }
 
     /*public void switchToStocks() {

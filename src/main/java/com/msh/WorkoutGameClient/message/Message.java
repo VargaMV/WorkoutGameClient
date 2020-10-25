@@ -10,7 +10,7 @@ public class Message {
     String from;
     String text;
 
-    public Message() {
+    Message() {
 
     }
 
@@ -18,5 +18,10 @@ public class Message {
         this.type = type;
         this.from = from;
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return from + ": " + text + ", " + type;
     }
 }
