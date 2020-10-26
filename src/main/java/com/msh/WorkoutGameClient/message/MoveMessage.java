@@ -15,8 +15,8 @@ public class MoveMessage extends Message {
     public MoveMessage() {
     }
 
-    public MoveMessage(MessageType type, String from, String text, Coordinate prevPos, Coordinate newPos) {
-        super(type, from, text);
+    public MoveMessage(String from, String text, Coordinate prevPos, Coordinate newPos) {
+        super(MessageType.MOVE, from, text);
         this.prevPos = prevPos;
         this.newPos = newPos;
     }

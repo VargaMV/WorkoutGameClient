@@ -25,11 +25,12 @@ public class ActionBoard extends JPanel {
 
         occupyButton = new JButton("Occupy");
         occupyButton.setBounds(10, 10, 80, 30);
-        occupyButton.addActionListener(e -> {
-            updateButtons();
-            //wsm.sendOccupy();
-        });
         occupyButton.addActionListener(listeners.get("occupy"));
+        occupyButton.addActionListener(e -> {
+            game.occupyOrIncrease();
+            wsm.sendOccupy(game.getMe().getPosition());
+            updateButtons();
+        });
         add(occupyButton);
 
         /*JButton evolveButton = new JButton("Evolve");
@@ -70,8 +71,6 @@ public class ActionBoard extends JPanel {
         messageLabel = new JLabel("");
         messageLabel.setBounds(260, 10, 200, 30);
         add(messageLabel);
-
-        updateButtons();
     }
 
     public void updateButtons() {

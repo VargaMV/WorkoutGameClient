@@ -3,6 +3,9 @@ package com.msh.WorkoutGameClient.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
+import java.util.*;
+
 @Getter
 @Setter
 public class Game {
@@ -18,9 +21,15 @@ public class Game {
         return map[i][j];
     }
 
+    public Field getField(Coordinate coordinate) {
+        return map[coordinate.getX()][coordinate.getY()];
+    }
+
     public boolean amIWorthy() {
         int x = me.getPosition().getX();
         int y = me.getPosition().getY();
+        System.out.println("field value: " + map[x][y].getValue());
+        System.out.println("score" + me.getCurrentScore());
         return (map[x][y].getValue() < me.getCurrentScore())
                 || (getField(x, y).getColor() == me.getColor() && me.getCurrentScore() > 0);
     }
@@ -41,15 +50,14 @@ public class Game {
         int x = me.getPosition().getX();
         int y = me.getPosition().getY();
         Field currentField = map[x][y];
-        currentField.setOwner(me);
+        currentField.setOwner(new SimplePlayer(me));
     }
 
     public void updateCurrentFieldValue(int value, boolean add) {
         int x = me.getPosition().getX();
         int y = me.getPosition().getY();
-        Field currentField = map[x][y];
-        int prevValue = currentField.getValue();
-        currentField.setValue(add ? (prevValue + value) : value);
+        int prevValue = map[x][y].getValue();
+        map[x][y].setValue(add ? (prevValue + value) : value);
     }
 
     @Override

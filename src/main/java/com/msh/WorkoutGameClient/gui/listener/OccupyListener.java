@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.gui.listener;
 
 import com.msh.WorkoutGameClient.gui.mainPanelParts.GameField;
+import com.msh.WorkoutGameClient.gui.mainPanelParts.InformationBoard;
 import com.msh.WorkoutGameClient.gui.mainPanelParts.MiniMap;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -19,14 +20,13 @@ public class OccupyListener implements ActionListener {
     public OccupyListener(List<JPanel> panels, Game game) {
         map = panels.get(0);
         miniMap = panels.get(1);
-        //info = panels.get(2);
+        info = panels.get(2);
         this.game = game;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        game.occupyOrIncrease();
-        //((InformationBoard)info).updateInfo();
+        ((InformationBoard) info).updateInfo();
         ((GameField) map).drawMap();
         ((MiniMap) miniMap).drawMiniMap();
     }

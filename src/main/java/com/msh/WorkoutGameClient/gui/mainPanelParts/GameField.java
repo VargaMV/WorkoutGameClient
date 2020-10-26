@@ -74,7 +74,10 @@ public class GameField extends JPanel {
                     button.setBorder(BorderFactory.createLineBorder(fields[i][j].getAwtColor(), 3));
                     if (fields[i][j].getPlayersOnField().size() > 0) {
                         List<String> monograms = new ArrayList<>();
-                        fields[i][j].getPlayersOnField().forEach(p -> monograms.add(p.getName().substring(0, 2)));
+                        for (var player : fields[i][j].getPlayersOnField()) {
+                            int to = Math.min(player.getName().length(), 2);
+                            monograms.add(player.getName().substring(0, to));
+                        }
                         button.setText(String.join(" ", monograms));
                     }
                 }

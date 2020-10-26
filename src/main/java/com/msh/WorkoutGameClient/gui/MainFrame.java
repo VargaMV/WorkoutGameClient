@@ -51,7 +51,11 @@ public class MainFrame extends JFrame {
     }
 
     public void updateFrame() {
-        ((MainPanel) mainPanel).updateMaps();
+        ((MainPanel) mainPanel).updateMap();
+        ((MainPanel) mainPanel).updateMiniMap();
+        ((MainPanel) mainPanel).updateInformationPanel();
+        ((MainPanel) mainPanel).updateActionBoard();
+
     }
 
     /*public void switchToStocks() {

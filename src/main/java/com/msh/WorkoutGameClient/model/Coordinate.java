@@ -21,4 +21,9 @@ public class Coordinate {
         }
         return Math.abs(this.x - x) + Math.abs(this.y - y);
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 }

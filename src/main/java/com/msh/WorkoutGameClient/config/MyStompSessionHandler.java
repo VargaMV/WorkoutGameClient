@@ -2,6 +2,9 @@ package com.msh.WorkoutGameClient.config;
 
 import com.msh.WorkoutGameClient.gui.MainFrame;
 import com.msh.WorkoutGameClient.message.*;
+import com.msh.WorkoutGameClient.message.response.MapResponse;
+import com.msh.WorkoutGameClient.message.response.PlayerResponse;
+import com.msh.WorkoutGameClient.message.response.SimpleResponse;
 import com.msh.WorkoutGameClient.model.Field;
 import com.msh.WorkoutGameClient.model.Game;
 import com.msh.WorkoutGameClient.model.Player;
@@ -11,7 +14,7 @@ import org.springframework.messaging.simp.stomp.*;
 
 import javax.swing.*;
 import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
@@ -52,7 +55,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public Type getPayloadType(StompHeaders stompHeaders) {
-        String[] destination = stompHeaders.getDestination().split("/");
+        String[] destination = Objects.requireNonNull(stompHeaders.getDestination()).split("/");
         if (destination.length > 2) {
             if (destination[2].equals("map")) {
                 return MapResponse.class;
@@ -86,7 +89,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         }
 
 
-        if (gui != null && playerSet && gameSet && !(msg.getFrom().equals(name) && stompHeaders.getDestination().equals("/public/map"))) {
+        if (gui != null && playerSet && gameSet && !(msg.getFrom().equals(name) && Objects.equals(stompHeaders.getDestination(), "/public/map"))) {
             ((MainFrame) gui).updateFrame();
             ((MainFrame) gui).switchToMain();
 

@@ -1,4 +1,4 @@
-package com.msh.WorkoutGameClient.message;
+package com.msh.WorkoutGameClient.message.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +13,11 @@ public class SimpleResponse implements Serializable {
     String text;
     String response;
 
-    SimpleResponse() {
+    public SimpleResponse() {
 
     }
 
-    SimpleResponse(String from, String text, String response) {
+    public SimpleResponse(String from, String text, String response) {
         this.from = from;
         this.text = text;
         this.response = response;

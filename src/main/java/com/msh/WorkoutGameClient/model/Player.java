@@ -1,22 +1,29 @@
 package com.msh.WorkoutGameClient.model;
 
+import com.msh.WorkoutGameClient.logic.ColorConverter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 
 @Getter
 @Setter
 public class Player implements Comparable<Player>, Serializable {
-    String name;
-    Color color;
-    Coordinate position;
-    int money;
-    int currentScore;
-    int totalScore;
-    int rangeOfVision;
-    boolean maxRange;
+    private String name;
+    private Color color;
+    private Coordinate position;
+    private int money;
+    private int currentScore;
+    private int totalScore;
+    private int rangeOfVision;
+    private boolean maxRange;
+    private Map<String, Integer> exerciseNumbers = new HashMap<>();
+    private Map<String, Integer> stockNumbers = new HashMap<>();
 
     public Player() {
 
@@ -30,6 +37,18 @@ public class Player implements Comparable<Player>, Serializable {
         this.currentScore = 0;
         this.totalScore = 0;
         this.rangeOfVision = 1;
+
+        File data = new File("data.csv");
+        try (Scanner scanner = new Scanner(data)) {
+            while (scanner.hasNextLine()) {
+                String dataLine = scanner.nextLine();
+                String exercise = dataLine.split(",")[0].trim();
+                exerciseNumbers.put(exercise, 0);
+                stockNumbers.put(exercise, 0);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -51,29 +70,7 @@ public class Player implements Comparable<Player>, Serializable {
     }
 
     public java.awt.Color getAwtColor() {
-        switch (color) {
-            case GREEN:
-                return java.awt.Color.GREEN;
-            case RED:
-                return java.awt.Color.RED;
-            case ORANGE:
-                return java.awt.Color.ORANGE;
-            case YELLOW:
-                return java.awt.Color.YELLOW;
-            case BLUE:
-                return java.awt.Color.BLUE;
-            case CYAN:
-                return java.awt.Color.CYAN;
-            case BLACK:
-                return java.awt.Color.BLACK;
-            case WHITE:
-                return java.awt.Color.WHITE;
-            case BROWN:
-                return new java.awt.Color(140, 90, 50);
-            case PURPLE:
-                return new java.awt.Color(100, 10, 100);
-        }
-        return java.awt.Color.GRAY;
+        return ColorConverter.convertToAWT(color);
     }
 
     @Override
