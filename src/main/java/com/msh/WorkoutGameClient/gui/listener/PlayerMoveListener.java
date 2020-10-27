@@ -11,9 +11,9 @@ import java.awt.event.ActionListener;
 
 public class PlayerMoveListener implements ActionListener {
 
-    JPanel infoPanel;
-    JPanel miniMap;
-    JPanel actionPanel;
+    private JPanel infoPanel;
+    private JPanel miniMap;
+    private JPanel actionPanel;
 
     public PlayerMoveListener(JPanel infoPanel, JPanel miniMap, JPanel actionPanel) {
         this.infoPanel = infoPanel;
@@ -23,8 +23,8 @@ public class PlayerMoveListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ((MiniMap) miniMap).drawMiniMap();
         ((InformationBoard) infoPanel).updateInfo();
         ((ActionBoard) actionPanel).updateButtons();
+        ((MiniMap) miniMap).drawMiniMap();
     }
 }

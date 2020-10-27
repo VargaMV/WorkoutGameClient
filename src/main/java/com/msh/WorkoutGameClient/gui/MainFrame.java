@@ -16,6 +16,7 @@ public class MainFrame extends JFrame {
     private final JPanel workoutPanel;*/
     private final CardLayout cardLayout;
     private WebSocketManager wsm;
+    private boolean main = false;
 
     public MainFrame(Game game, WebSocketManager wsm) {
 
@@ -51,10 +52,10 @@ public class MainFrame extends JFrame {
     }
 
     public void updateFrame() {
-        ((MainPanel) mainPanel).updateMap();
-        ((MainPanel) mainPanel).updateMiniMap();
         ((MainPanel) mainPanel).updateInformationPanel();
         ((MainPanel) mainPanel).updateActionBoard();
+        ((MainPanel) mainPanel).updateMap();
+        ((MainPanel) mainPanel).updateMiniMap();
 
     }
 
@@ -65,6 +66,11 @@ public class MainFrame extends JFrame {
 
     public void switchToMain() {
         cardLayout.show(containerPanel, "main");
+        main = true;
+    }
+
+    public boolean isMain() {
+        return main;
     }
 
     /*public void switchToWorkout() {

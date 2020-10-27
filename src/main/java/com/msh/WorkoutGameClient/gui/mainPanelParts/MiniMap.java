@@ -17,8 +17,6 @@ public class MiniMap extends JPanel {
     }
     public void drawMiniMap(){
         removeAll();
-        repaint();
-        revalidate();
         for (int i = 0; i < game.getMap().length; i++) {
             for (int j = 0; j < game.getMap().length; j++) {
                 JButton mapButton = new JButton("");
@@ -34,5 +32,7 @@ public class MiniMap extends JPanel {
                 add(mapButton);
             }
         }
+        repaint();
+        revalidate();
     }
 }

@@ -28,8 +28,6 @@ public class Game {
     public boolean amIWorthy() {
         int x = me.getPosition().getX();
         int y = me.getPosition().getY();
-        System.out.println("field value: " + map[x][y].getValue());
-        System.out.println("score" + me.getCurrentScore());
         return (map[x][y].getValue() < me.getCurrentScore())
                 || (getField(x, y).getColor() == me.getColor() && me.getCurrentScore() > 0);
     }

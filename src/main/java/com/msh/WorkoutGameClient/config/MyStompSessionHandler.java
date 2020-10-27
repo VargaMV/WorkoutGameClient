@@ -91,12 +91,14 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
         if (gui != null && playerSet && gameSet && !(msg.getFrom().equals(name) && Objects.equals(stompHeaders.getDestination(), "/public/map"))) {
             ((MainFrame) gui).updateFrame();
-            ((MainFrame) gui).switchToMain();
-
+            //TODO: is this if needed?
+            if (!((MainFrame) gui).isMain()) {
+                ((MainFrame) gui).switchToMain();
+            }
         }
     }
 
-    Message joinMsg() {
+    private Message joinMsg() {
         return new Message(MessageType.JOIN, name, "I want to play!");
     }
 

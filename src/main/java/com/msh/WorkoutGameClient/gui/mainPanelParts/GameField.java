@@ -36,8 +36,6 @@ public class GameField extends JPanel {
 
     public void drawMap() {
         removeAll();
-        repaint();
-        revalidate();
 
         Coordinate pos = game.getMe().getPosition();
         int posX = pos.getX();
@@ -106,6 +104,9 @@ public class GameField extends JPanel {
         posLabel.setText(String.format("Current position: (%d, %d)", posX, posY));
         posLabel.setBounds(20, 10, 200, 30);
         add(posLabel);
+
+        repaint();
+        revalidate();
     }
 
     /*public void setFieldColor(Color color) {
