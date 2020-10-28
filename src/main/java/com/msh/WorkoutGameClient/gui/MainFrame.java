@@ -5,6 +5,7 @@ import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 public class MainFrame extends JFrame {
 
@@ -12,8 +13,8 @@ public class MainFrame extends JFrame {
     private final Container containerPanel;
     private final JPanel loginPanel;
     private final JPanel mainPanel;
-    /*private final JPanel stockPanel;
-    private final JPanel workoutPanel;*/
+    private final JPanel stockPanel;
+    //private final JPanel workoutPanel;
     private final CardLayout cardLayout;
     private WebSocketManager wsm;
     private boolean main = false;
@@ -22,50 +23,57 @@ public class MainFrame extends JFrame {
 
         super("Workout Game Client");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 650);
+        setSize(816, 660);
         setLocationRelativeTo(null);
         setLayout(null);
+        createMenuBar();
 
         this.game = game;
         cardLayout = new CardLayout();
         this.loginPanel = new LoginPanel(wsm);
         this.mainPanel = new MainPanel(game, wsm);
         this.wsm = wsm;
-        /*this.stockPanel = new StockPanel(game);
-        this.workoutPanel = new WorkoutPanel(game);*/
+        this.stockPanel = new StockPanel(game, wsm);
+        //this.workoutPanel = new WorkoutPanel(game, wsm);
 
 
         containerPanel = new JPanel(cardLayout);
         containerPanel.setSize(800, 650);
-        /*JScrollPane scrollableStock = new JScrollPane(stockPanel);
+        JScrollPane scrollableStock = new JScrollPane(stockPanel);
         scrollableStock.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JScrollPane scrollableWorkout = new JScrollPane(workoutPanel);
+        /*JScrollPane scrollableWorkout = new JScrollPane(workoutPanel);
         scrollableWorkout.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);*/
 
         containerPanel.add(loginPanel, "login");
         containerPanel.add(mainPanel, "main");
-        /*containerPanel.add(scrollableStock, "stock");
-        containerPanel.add(scrollableWorkout, "workout");*/
+        containerPanel.add(scrollableStock, "stock");
+        //containerPanel.add(scrollableWorkout, "workout");
 
         add(containerPanel);
         setVisible(true);
     }
 
-    public void updateFrame() {
+    public void updateMainPanel() {
         ((MainPanel) mainPanel).updateInformationPanel();
         ((MainPanel) mainPanel).updateActionBoard();
         ((MainPanel) mainPanel).updateMap();
         ((MainPanel) mainPanel).updateMiniMap();
-
     }
 
-    /*public void switchToStocks() {
+    public void updateStockPanel() {
+        ((StockPanel) stockPanel).updateContent();
+    }
+
+    public void switchToStocks() {
         cardLayout.show(containerPanel, "stock");
         ((StockPanel) stockPanel).updateContent();
-    }*/
+    }
 
     public void switchToMain() {
         cardLayout.show(containerPanel, "main");
+        ((MainPanel) mainPanel).updateInformationPanel();
+        ((MainPanel) mainPanel).updateActionBoard();
+        ((MainPanel) mainPanel).updateMap();
         main = true;
     }
 
@@ -77,4 +85,33 @@ public class MainFrame extends JFrame {
         cardLayout.show(containerPanel, "workout");
         ((WorkoutPanel) workoutPanel).updateContent();
     }*/
+
+    void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        menuBar.add(fileMenu);
+
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.addActionListener(e -> System.exit(0));
+        fileMenu.add(exitMenuItem);
+
+        JMenu panelsMenu = new JMenu("Panels");
+        panelsMenu.setMnemonic(KeyEvent.VK_P);
+        menuBar.add(panelsMenu);
+
+        JMenuItem mainPanelItem = new JMenuItem("Main");
+        mainPanelItem.addActionListener(e -> switchToMain());
+        panelsMenu.add(mainPanelItem);
+
+        JMenuItem stocksPanelItem = new JMenuItem("Manage Stocks");
+        stocksPanelItem.addActionListener(e -> switchToStocks());
+        panelsMenu.add(stocksPanelItem);
+
+        /*JMenuItem workoutPanelItem = new JMenuItem("Manage Workout");
+        workoutPanelItem.addActionListener(e -> switchToWorkout());
+        panelsMenu.add(workoutPanelItem);*/
+    }
 }

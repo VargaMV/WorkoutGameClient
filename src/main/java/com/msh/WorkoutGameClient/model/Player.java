@@ -1,15 +1,15 @@
 package com.msh.WorkoutGameClient.model;
 
 import com.msh.WorkoutGameClient.logic.ColorConverter;
+import com.msh.WorkoutGameClient.logic.PriceCalculator;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 
 @Getter
 @Setter
@@ -22,8 +22,8 @@ public class Player implements Comparable<Player>, Serializable {
     private int totalScore;
     private int rangeOfVision;
     private boolean maxRange;
-    private Map<String, Integer> exerciseNumbers = new HashMap<>();
-    private Map<String, Integer> stockNumbers = new HashMap<>();
+    private Map<String, Integer> exerciseNumbers = new LinkedHashMap<>();
+    private Map<String, Integer> stockNumbers = new LinkedHashMap<>();
 
     public Player() {
 
@@ -38,7 +38,7 @@ public class Player implements Comparable<Player>, Serializable {
         this.totalScore = 0;
         this.rangeOfVision = 1;
 
-        File data = new File("data.csv");
+        /*File data = new File("data.csv");
         try (Scanner scanner = new Scanner(data)) {
             while (scanner.hasNextLine()) {
                 String dataLine = scanner.nextLine();
@@ -48,7 +48,23 @@ public class Player implements Comparable<Player>, Serializable {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }*/
+    }
+
+    public void incMoney(int earning) {
+        money += earning;
+    }
+
+    public void decMoney(int cost) {
+        money -= cost;
+    }
+
+    public boolean isAffordable(String exercise) {
+        return money >= PriceCalculator.calculateNext(stockNumbers.get(exercise));
+    }
+
+    public int getNextPrice(String exercise) {
+        return PriceCalculator.calculateNext(stockNumbers.get(exercise));
     }
 
     @Override

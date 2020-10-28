@@ -5,6 +5,7 @@ import com.msh.WorkoutGameClient.message.*;
 import com.msh.WorkoutGameClient.message.response.MapResponse;
 import com.msh.WorkoutGameClient.message.response.PlayerResponse;
 import com.msh.WorkoutGameClient.message.response.SimpleResponse;
+import com.msh.WorkoutGameClient.message.response.StockResponse;
 import com.msh.WorkoutGameClient.model.Field;
 import com.msh.WorkoutGameClient.model.Game;
 import com.msh.WorkoutGameClient.model.Player;
@@ -14,6 +15,7 @@ import org.springframework.messaging.simp.stomp.*;
 
 import javax.swing.*;
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Objects;
 
 public class MyStompSessionHandler extends StompSessionHandlerAdapter {
@@ -22,7 +24,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     private final Logger logger = LogManager.getLogger(MyStompSessionHandler.class);
     private final String name;
     private JFrame gui;
-    private boolean gameSet = false;
+    private boolean mapSet = false;
     private boolean playerSet = false;
 
     public MyStompSessionHandler(Game game, String name, JFrame gui) {
@@ -36,6 +38,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         logger.info("Connected" + stompHeaders);
         stompSession.subscribe("/public", this);
         stompSession.subscribe("/public/map", this);
+        stompSession.subscribe("/public/stock", this);
         stompSession.subscribe("/private/map/" + name, this);
         stompSession.subscribe("/private/player/" + name, this);
         logger.info("Subscribed to /public");
@@ -61,6 +64,8 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 return MapResponse.class;
             } else if (destination[2].equals("player")) {
                 return PlayerResponse.class;
+            } else if (destination[2].equals("stock")) {
+                return StockResponse.class;
             }
         }
         return SimpleResponse.class;
@@ -69,28 +74,29 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void handleFrame(StompHeaders stompHeaders, Object payload) {
         SimpleResponse msg = (SimpleResponse) payload;
+        logger.info(msg.getFrom() + " : " + msg.getText());
+        logger.info("Response:" + msg.getResponse());
+
         if (msg.getResponse().equals("MAP")) {
             MapResponse mapMsg = (MapResponse) payload;
-            logger.info(mapMsg.getFrom() + " : " + mapMsg.getText());
             Field[][] map = mapMsg.getMap();
             game.setMap(map);
-            System.out.println(game.toString());
-            gameSet = true;
+            mapSet = true;
         } else if (msg.getResponse().equals("PLAYER")) {
             PlayerResponse playerMsg = (PlayerResponse) payload;
-            logger.info(playerMsg.getFrom() + " : " + playerMsg.getText());
             Player player = playerMsg.getPlayer();
             game.setMe(player);
-            System.out.println(game.toString());
             playerSet = true;
-        } else {
-            logger.info(msg.getFrom() + " : " + msg.getText());
-            logger.info("Response:" + msg.getResponse());
+        } else if (msg.getResponse().equals("STOCK")) {
+            StockResponse stockMsg = (StockResponse) payload;
+            logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
+            Map<String, Integer> totalStocks = stockMsg.getStocks();
+            game.setTotalStockNumbers(totalStocks);
+            ((MainFrame) gui).updateStockPanel();
         }
 
-
-        if (gui != null && playerSet && gameSet && !(msg.getFrom().equals(name) && Objects.equals(stompHeaders.getDestination(), "/public/map"))) {
-            ((MainFrame) gui).updateFrame();
+        if (gui != null && playerSet && mapSet && !(msg.getFrom().equals(name) && Objects.equals(stompHeaders.getDestination(), "/public/map"))) {
+            ((MainFrame) gui).updateMainPanel();
             //TODO: is this if needed?
             if (!((MainFrame) gui).isMain()) {
                 ((MainFrame) gui).switchToMain();

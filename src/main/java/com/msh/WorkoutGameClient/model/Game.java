@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.model;
 
+import com.msh.WorkoutGameClient.logic.PriceCalculator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +13,20 @@ public class Game {
 
     private Field[][] map = new Field[1][1];
     private Player me = new Player("TEST", Color.BLUE);
+    private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
+    private Map<String, Integer> exerciseValues = new LinkedHashMap<>();
 
     public Game() {
-
+        File data = new File("data.csv");
+        try (Scanner scanner = new Scanner(data)) {
+            while (scanner.hasNextLine()) {
+                String dataLine = scanner.nextLine();
+                String exercise = dataLine.split(",")[0].trim();
+                totalStockNumbers.put(exercise, 0);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public Field getField(int i, int j) {
@@ -58,8 +70,26 @@ public class Game {
         map[x][y].setValue(add ? (prevValue + value) : value);
     }
 
+    public int getTotalStockNumber(String exercise) {
+        return totalStockNumbers.get(exercise);
+    }
+
+    public int getSharePercentage(String exercise) {
+        return (int) Math.floor(me.getStockNumbers().get(exercise) * 100 / (double) totalStockNumbers.get(exercise));
+    }
+
     @Override
     public String toString() {
         return map.length + " " + me;
+    }
+
+    public void buyStock(String exercise) {
+        int prevValue = totalStockNumbers.get(exercise);
+        totalStockNumbers.put(exercise, prevValue + 1);
+        int myPrevValue = me.getStockNumbers().get(exercise);
+        me.getStockNumbers().put(exercise, myPrevValue + 1);
+
+        int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
+        me.decMoney(price);
     }
 }

@@ -1,10 +1,7 @@
 package com.msh.WorkoutGameClient.logic;
 
 import com.msh.WorkoutGameClient.config.MyStompSessionHandler;
-import com.msh.WorkoutGameClient.message.Message;
-import com.msh.WorkoutGameClient.message.MessageType;
-import com.msh.WorkoutGameClient.message.MoveMessage;
-import com.msh.WorkoutGameClient.message.OccupationMessage;
+import com.msh.WorkoutGameClient.message.*;
 import com.msh.WorkoutGameClient.model.Coordinate;
 import com.msh.WorkoutGameClient.model.Game;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -52,6 +49,15 @@ public class WebSocketManager {
 
     public void sendOccupy(Coordinate field) {
         session.send("/app/action/occupy", new OccupationMessage(game.getMe().getName(), "I have a new field!", field));
+    }
+
+    //TODO: StockMessage
+    public void sendStockBought(String exercise) {
+        session.send("/app/action/stock", new Message(MessageType.STOCK, game.getMe().getName(), exercise));
+    }
+
+    public void sendExerciseDone(String exercise, int amount) {
+        //session.send("/app/action/stock", new ExerciseMessage(MessageType.EXERCISE, game.getMe().getName(), "I workout!"));
     }
 
     public void setGUI(JFrame gui) {

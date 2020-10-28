@@ -6,5 +6,6 @@ public enum MessageType {
     JOIN,
     MOVE,
     OCCUPY,
-    STOCK_BUY,
+    STOCK,
+    EXERCISE
 }
