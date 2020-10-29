@@ -9,11 +9,9 @@ public class MiniMap extends JPanel {
     private Game game;
     public MiniMap(Game game){
         this.game = game;
-
-        setBounds(520,20,260,260);
+        setPreferredSize(new Dimension(300, 300));
         setLayout(null);
-
-        //drawMiniMap();
+        setVisible(true);
     }
     public void drawMiniMap(){
         removeAll();

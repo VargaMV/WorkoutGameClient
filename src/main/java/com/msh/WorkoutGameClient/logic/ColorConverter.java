@@ -24,7 +24,21 @@ public class ColorConverter {
             case BROWN:
                 return new java.awt.Color(140, 90, 50);
             case PURPLE:
-                return new java.awt.Color(100, 10, 100);
+                return new java.awt.Color(128, 0, 128);
+            case LIME:
+                return new java.awt.Color(0, 255, 0);
+            case NAVY:
+                return new java.awt.Color(0, 0, 128);
+            case OLIVE:
+                return new java.awt.Color(128, 128, 0);
+            case MAGENTA:
+                return new java.awt.Color(255, 0, 255);
+            case GOLD:
+                return new java.awt.Color(218, 165, 32);
+            case TEAL:
+                return new java.awt.Color(0, 128, 128);
+            case MAROON:
+                return new java.awt.Color(128, 0, 0);
         }
         return java.awt.Color.PINK;
     }

@@ -10,14 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class LoginPanel extends JPanel {
+class LoginPanel extends JPanel {
 
     private JTextField nameInput;
     private JTextField ipInput;
     private JTextField portInput;
-    WebSocketManager wsm;
+    private WebSocketManager wsm;
 
-    public LoginPanel(WebSocketManager wsm) {
+    LoginPanel(WebSocketManager wsm) {
         this.wsm = wsm;
 
         setSize(800, 650);

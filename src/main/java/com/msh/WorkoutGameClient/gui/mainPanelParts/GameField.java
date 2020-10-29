@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
+import com.msh.WorkoutGameClient.gui.listener.MapResizeListener;
 import com.msh.WorkoutGameClient.logic.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Coordinate;
 import com.msh.WorkoutGameClient.model.Field;
@@ -23,11 +24,11 @@ public class GameField extends JPanel {
         this.wsm = wsm;
         posLabel = new JLabel();
         setLayout(null);
-        setBounds(0, 0, 500, 500);
+        setPreferredSize(new Dimension(500, 500));
         setBackground(Color.GRAY);
-        //drawMap();
         listener = e -> System.out.println("MoveListener needs to be set");
-
+        addComponentListener(new MapResizeListener(game, this));
+        setVisible(true);
     }
 
     public void setMoveListener(ActionListener listener) {
@@ -47,10 +48,17 @@ public class GameField extends JPanel {
         int maxX = Math.min(size - 1, posX + 2);
         int minY = Math.max(0, posY - 2);
         int maxY = Math.min(size - 1, posY + 2);
+
+        int shift = Math.min(this.getSize().width - 75, this.getSize().height - 75) / 5;
+        int buttonSize = 2 * shift / 3;
+        int wholeSize = 4 * shift + buttonSize;
+        int leftMargin = (this.getSize().width - wholeSize) / 2;
+        int topMargin = (this.getSize().height - wholeSize) / 2;
+
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
                 JButton button = new JButton(i + "" + j);
-                button.setBounds((3 + i - posX) * 75, (3 + j - posY) * 75, 50, 50);
+                button.setBounds(leftMargin + (2 + i - posX) * shift, topMargin + (2 + j - posY) * shift, buttonSize, buttonSize);
                 button.setBorderPainted(false);
                 button.setFocusPainted(false);
                 int finalJ = j;
@@ -67,7 +75,7 @@ public class GameField extends JPanel {
                 });
                 add(button);
                 button.setBackground(Color.GRAY);
-                if (pos.distance(i, j, game.getMe().isMaxRange()) <= game.getMe().getRangeOfVision()) {
+                if (pos.distance(i, j, game.getMe().isSqrRange()) <= game.getMe().getRangeOfVision()) {
                     button.setBorderPainted(true);
                     button.setBorder(BorderFactory.createLineBorder(fields[i][j].getAwtColor(), 3));
                     if (fields[i][j].getPlayersOnField().size() > 0) {
@@ -108,11 +116,6 @@ public class GameField extends JPanel {
         repaint();
         revalidate();
     }
-
-    /*public void setFieldColor(Color color) {
-        game.updateFieldColor(color);
-        drawMap();
-    }*/
 
 }
 

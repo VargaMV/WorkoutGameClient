@@ -21,7 +21,7 @@ public class Player implements Comparable<Player>, Serializable {
     private int currentScore;
     private int totalScore;
     private int rangeOfVision;
-    private boolean maxRange;
+    private boolean sqrRange;
     private Map<String, Integer> exerciseNumbers = new LinkedHashMap<>();
     private Map<String, Integer> stockNumbers = new LinkedHashMap<>();
 
@@ -37,18 +37,6 @@ public class Player implements Comparable<Player>, Serializable {
         this.currentScore = 0;
         this.totalScore = 0;
         this.rangeOfVision = 1;
-
-        /*File data = new File("data.csv");
-        try (Scanner scanner = new Scanner(data)) {
-            while (scanner.hasNextLine()) {
-                String dataLine = scanner.nextLine();
-                String exercise = dataLine.split(",")[0].trim();
-                exerciseNumbers.put(exercise, 0);
-                stockNumbers.put(exercise, 0);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }*/
     }
 
     public void incMoney(int earning) {
@@ -59,12 +47,33 @@ public class Player implements Comparable<Player>, Serializable {
         money -= cost;
     }
 
+    public void incScore(int score) {
+        currentScore += score;
+    }
+
+    public void decScore(int score) {
+        currentScore -= score;
+    }
+
     public boolean isAffordable(String exercise) {
         return money >= PriceCalculator.calculateNext(stockNumbers.get(exercise));
     }
 
     public int getNextPrice(String exercise) {
         return PriceCalculator.calculateNext(stockNumbers.get(exercise));
+    }
+
+    public void incExerciseValue(String exercise, int newValue) {
+        int prevValue = exerciseNumbers.get(exercise);
+        exerciseNumbers.put(exercise, prevValue + newValue);
+    }
+
+    public void incRangeOfVision() {
+        int prevRange = rangeOfVision;
+        if (sqrRange) {
+            rangeOfVision = Math.min(2, rangeOfVision + 1);
+        }
+        sqrRange = !sqrRange || prevRange == 2;
     }
 
     @Override

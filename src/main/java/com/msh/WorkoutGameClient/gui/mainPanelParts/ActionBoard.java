@@ -13,15 +13,16 @@ public class ActionBoard extends JPanel {
     private final Game game;
     private WebSocketManager wsm;
 
-    JButton occupyButton;
-    JLabel messageLabel;
+    private JButton occupyButton;
+    private JButton evolveButton;
+    private JLabel messageLabel;
 
     public ActionBoard(Game game, WebSocketManager wsm, Map<String, ActionListener> listeners) {
         this.game = game;
         this.wsm = wsm;
         setLayout(null);
-        setBounds(0, 500, 500, 120);
-        setBackground(Color.BLUE);
+        setPreferredSize(new Dimension(500, 50));
+        setBackground(new Color(50, 50, 50));
 
         occupyButton = new JButton("Occupy");
         occupyButton.setBounds(10, 10, 80, 30);
@@ -33,10 +34,10 @@ public class ActionBoard extends JPanel {
         });
         add(occupyButton);
 
-        /*JButton evolveButton = new JButton("Evolve");
-        evolveButton.setBounds(10, 50, 80, 30);
+        evolveButton = new JButton("Evolve");
+        evolveButton.setBounds(100, 10, 80, 30);
         evolveButton.addActionListener(listeners.get("evolve"));
-        add(evolveButton);*/
+        //add(evolveButton);
 
         /*JTextField moneyInput = new JTextField();
         moneyInput.setBounds(210, 10, 40, 30);
@@ -71,6 +72,7 @@ public class ActionBoard extends JPanel {
         messageLabel = new JLabel("");
         messageLabel.setBounds(260, 10, 200, 30);
         add(messageLabel);
+        setVisible(true);
     }
 
     public void updateButtons() {

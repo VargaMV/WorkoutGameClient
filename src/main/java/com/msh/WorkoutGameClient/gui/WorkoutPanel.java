@@ -1,42 +1,40 @@
 package com.msh.WorkoutGameClient.gui;
 
+import com.msh.WorkoutGameClient.logic.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class WorkoutPanel extends JPanel {
+class WorkoutPanel extends JPanel {
 
-    /*private final Game game;
-    JLabel[] exerciseLabels;
-    JButton[] saveButtons;
-    JTextField[] inputFields;
+    private final Game game;
+    private WebSocketManager wsm;
+    private JLabel[] exerciseLabels;
+    private JButton[] saveButtons;
+    private JTextField[] inputFields;
 
-    public WorkoutPanel(Game game) {
+    WorkoutPanel(Game game, WebSocketManager wsm) {
         this.game = game;
+        this.wsm = wsm;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        int exerciseNumber = game.getMe().getExerciseNumbers().size();
+        int exerciseNumber = game.getExerciseValues().size();
         exerciseLabels = new JLabel[exerciseNumber];
         saveButtons = new JButton[exerciseNumber];
         inputFields = new JTextField[exerciseNumber];
 
         int i = 0;
-        for (var entry : game.getMe().getExerciseNumbers().entrySet()) {
-            String exercise = entry.getKey();
-            Integer value = entry.getValue();
-            int records = game.getMe().getExerciseNumbers().get(exercise);
-            int ownStock = game.getMe().getStockNumbers().get(exercise);
-            int allStock = game.getAllStockNumber(exercise);
-            int myValue = (int) Math.ceil(value * ownStock / (double) allStock);
+        for (var exercise : game.getExerciseValues().keySet()) {
             exerciseLabels[i] = new JLabel();
-            exerciseLabels[i].setText(String.format("%s : %d DefValue: %d OwnValue: %d", exercise, records, value, myValue));
             saveButtons[i] = new JButton("Save");
             int finalI = i;
             saveButtons[i].addActionListener(e -> {
-                game.addValue(exercise, Integer.parseInt(inputFields[finalI].getText()));
+                int reps = Integer.parseInt(inputFields[finalI].getText());
+                game.exerciseDone(exercise, reps);
                 inputFields[finalI].setText("");
                 updateContent();
+                wsm.sendExerciseDone(exercise, reps);
             });
             inputFields[i] = new JTextField();
 
@@ -70,17 +68,17 @@ public class WorkoutPanel extends JPanel {
 
     }
 
-    public void updateContent() {
+    void updateContent() {
         int i = 0;
-        for (var entry : game.getValues().entrySet()) {
+        for (var entry : game.getExerciseValues().entrySet()) {
             String exercise = entry.getKey();
             Integer value = entry.getValue();
-            int records = game.getRecords().get(exercise);
-            int ownStock = game.getStocks().get(exercise);
-            int allStock = game.getAllStockNumber(exercise);
+            int records = game.getMe().getExerciseNumbers().get(exercise);
+            int ownStock = game.getMe().getStockNumbers().get(exercise);
+            int allStock = game.getTotalStockNumber(exercise);
             int myValue = (int) Math.ceil(value * ownStock / (double) allStock);
             exerciseLabels[i].setText(String.format("%s : %d DefValue: %d OwnValue: %d", exercise, records, value, myValue));
             i++;
         }
-    }*/
+    }
 }

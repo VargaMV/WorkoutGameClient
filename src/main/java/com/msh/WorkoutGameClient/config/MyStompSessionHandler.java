@@ -26,6 +26,8 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     private JFrame gui;
     private boolean mapSet = false;
     private boolean playerSet = false;
+    private boolean stockSet = false;
+    private boolean allSet = false;
 
     public MyStompSessionHandler(Game game, String name, JFrame gui) {
         this.game = game;
@@ -42,7 +44,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         stompSession.subscribe("/private/map/" + name, this);
         stompSession.subscribe("/private/player/" + name, this);
         logger.info("Subscribed to /public");
-        stompSession.send("/app/action", joinMsg());
+        stompSession.send("/app/action", new Message(MessageType.JOIN, name, "I want to play!"));
         logger.info("Join message sent to webSocket server");
     }
 
@@ -77,35 +79,44 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         logger.info(msg.getFrom() + " : " + msg.getText());
         logger.info("Response:" + msg.getResponse());
 
-        if (msg.getResponse().equals("MAP")) {
-            MapResponse mapMsg = (MapResponse) payload;
-            Field[][] map = mapMsg.getMap();
-            game.setMap(map);
-            mapSet = true;
-        } else if (msg.getResponse().equals("PLAYER")) {
-            PlayerResponse playerMsg = (PlayerResponse) payload;
-            Player player = playerMsg.getPlayer();
-            game.setMe(player);
-            playerSet = true;
-        } else if (msg.getResponse().equals("STOCK")) {
-            StockResponse stockMsg = (StockResponse) payload;
-            logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
-            Map<String, Integer> totalStocks = stockMsg.getStocks();
-            game.setTotalStockNumbers(totalStocks);
-            ((MainFrame) gui).updateStockPanel();
+        switch (msg.getResponse()) {
+            case "PLAYER":
+                PlayerResponse playerMsg = (PlayerResponse) payload;
+                Player player = playerMsg.getPlayer();
+                game.setMe(player);
+                playerSet = true;
+                break;
+            case "MAP":
+                MapResponse mapMsg = (MapResponse) payload;
+                Field[][] map = mapMsg.getMap();
+                game.setMap(map);
+                mapSet = true;
+                if (playerSet) {
+                    ((MainFrame) gui).updateMainPanel();
+                }
+                break;
+            case "STOCK":
+                StockResponse stockMsg = (StockResponse) payload;
+                logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
+                Map<String, Integer> totalStocks = stockMsg.getStocks();
+                game.setTotalStockNumbers(totalStocks);
+                stockSet = true;
+                if (playerSet) {
+                    ((MainFrame) gui).updateStockPanel();
+                }
+                break;
         }
 
-        if (gui != null && playerSet && mapSet && !(msg.getFrom().equals(name) && Objects.equals(stompHeaders.getDestination(), "/public/map"))) {
+
+        //when joining
+        if (gui != null && playerSet && mapSet && stockSet && !allSet) {
+            ((MainFrame) gui).createMenuBar();
             ((MainFrame) gui).updateMainPanel();
-            //TODO: is this if needed?
-            if (!((MainFrame) gui).isMain()) {
-                ((MainFrame) gui).switchToMain();
-            }
+            ((MainFrame) gui).updateStockPanel();
+            ((MainFrame) gui).switchToMain();
+            game.setRetrievedDataFromServer(true);
+            allSet = true;
         }
-    }
-
-    private Message joinMsg() {
-        return new Message(MessageType.JOIN, name, "I want to play!");
     }
 
 }

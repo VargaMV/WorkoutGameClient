@@ -15,6 +15,7 @@ public class Game {
     private Player me = new Player("TEST", Color.BLUE);
     private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
     private Map<String, Integer> exerciseValues = new LinkedHashMap<>();
+    private boolean retrievedDataFromServer = false;
 
     public Game() {
         File data = new File("data.csv");
@@ -22,7 +23,9 @@ public class Game {
             while (scanner.hasNextLine()) {
                 String dataLine = scanner.nextLine();
                 String exercise = dataLine.split(",")[0].trim();
+                int value = Integer.parseInt(dataLine.split(",")[1]);
                 totalStockNumbers.put(exercise, 0);
+                exerciseValues.put(exercise, value);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -74,22 +77,29 @@ public class Game {
         return totalStockNumbers.get(exercise);
     }
 
+    public void exerciseDone(String exercise, int amount) {
+        me.incExerciseValue(exercise, amount);
+        me.incScore((int) Math.ceil(exerciseValues.get(exercise) * getSharePercentage(exercise) / 100.0) * amount);
+    }
+
     public int getSharePercentage(String exercise) {
         return (int) Math.floor(me.getStockNumbers().get(exercise) * 100 / (double) totalStockNumbers.get(exercise));
+    }
+
+    public void buyStock(String exercise) {
+        if (me.isAffordable(exercise)) {
+            int prevValue = totalStockNumbers.get(exercise);
+            totalStockNumbers.put(exercise, prevValue + 1);
+            int myPrevValue = me.getStockNumbers().get(exercise);
+            me.getStockNumbers().put(exercise, myPrevValue + 1);
+
+            int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
+            me.decMoney(price);
+        }
     }
 
     @Override
     public String toString() {
         return map.length + " " + me;
-    }
-
-    public void buyStock(String exercise) {
-        int prevValue = totalStockNumbers.get(exercise);
-        totalStockNumbers.put(exercise, prevValue + 1);
-        int myPrevValue = me.getStockNumbers().get(exercise);
-        me.getStockNumbers().put(exercise, myPrevValue + 1);
-
-        int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
-        me.decMoney(price);
     }
 }

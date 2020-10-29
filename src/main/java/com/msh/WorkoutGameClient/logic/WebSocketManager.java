@@ -57,7 +57,7 @@ public class WebSocketManager {
     }
 
     public void sendExerciseDone(String exercise, int amount) {
-        //session.send("/app/action/stock", new ExerciseMessage(MessageType.EXERCISE, game.getMe().getName(), "I workout!"));
+        session.send("/app/action/exercise", new ExerciseMessage(game.getMe().getName(), "I workout!", exercise, amount));
     }
 
     public void setGUI(JFrame gui) {

@@ -1,9 +1,12 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
 import com.msh.WorkoutGameClient.model.Game;
+import com.msh.WorkoutGameClient.model.SimplePlayer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class InformationBoard extends JPanel {
 
@@ -12,12 +15,13 @@ public class InformationBoard extends JPanel {
     private final JLabel currentFieldValueLabel;
     private final JLabel myCurrentValueLabel;
     private final JLabel moneyLabel;
+    private final JLabel othersOnField;
 
     public InformationBoard(Game game){
         this.game = game;
         setLayout(null);
-        setBounds(500,300,300,350);
-        setBackground(Color.YELLOW);
+        setPreferredSize(new Dimension(300, 350));
+        setBackground(new Color(160, 160, 160));
 
         myNameLabel = new JLabel("");
         myNameLabel.setBounds(10, 20, 200, 30);
@@ -35,6 +39,12 @@ public class InformationBoard extends JPanel {
         currentFieldValueLabel = new JLabel("");
         currentFieldValueLabel.setBounds(10, 110, 200, 15);
         add(currentFieldValueLabel);
+
+        othersOnField = new JLabel("");
+        othersOnField.setBounds(10, 130, 200, 75);
+        add(othersOnField);
+
+        setVisible(true);
 
     }
 
@@ -59,6 +69,14 @@ public class InformationBoard extends JPanel {
                         "My current money: %d",
                         game.getMe().getMoney()
                 )
+        );
+        othersOnField.setText(
+                "<html>Others on Field:<br>" +
+                        game.getField(game.getMe().getPosition()).getPlayersOnField().stream()
+                                .map(SimplePlayer::getName)
+                                .filter(name -> !name.equals(game.getMe().getName()))
+                                .collect(Collectors.joining("<br>"))
+                        + "</html>"
         );
     }
 
