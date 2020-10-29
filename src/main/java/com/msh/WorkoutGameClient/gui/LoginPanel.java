@@ -10,35 +10,51 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-class LoginPanel extends JPanel {
+public class LoginPanel extends JPanel {
 
     private JTextField nameInput;
     private JTextField ipInput;
     private JTextField portInput;
+    private JLabel feedBackLabel;
     private WebSocketManager wsm;
 
-    LoginPanel(WebSocketManager wsm) {
+    public LoginPanel(WebSocketManager wsm) {
         this.wsm = wsm;
 
         setSize(800, 650);
-        setLayout(null);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.insets = new Insets(10, 0, 0, 0);
 
         JLabel title = new JLabel("LOGIN");
-        title.setBounds(300, 170, 200, 30);
-        add(title);
+        title.setPreferredSize(new Dimension(200, 30));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        gbc.gridy = 2;
+        add(title, gbc);
 
 
         nameInput = new JTextField("Name");
-        nameInput.setBounds(300, 210, 200, 30);
-        add(nameInput);
+        nameInput.setPreferredSize(new Dimension(200, 30));
+        gbc.gridy = 3;
+        add(nameInput, gbc);
 
         ipInput = new JTextField("IP");
-        ipInput.setBounds(300, 250, 200, 30);
-        add(ipInput);
+        ipInput.setPreferredSize(new Dimension(200, 30));
+        gbc.gridy = 4;
+        add(ipInput, gbc);
 
         portInput = new JTextField("Port");
-        portInput.setBounds(300, 290, 200, 30);
-        add(portInput);
+        portInput.setPreferredSize(new Dimension(200, 30));
+        gbc.gridy = 5;
+        add(portInput, gbc);
+
+        feedBackLabel = new JLabel("");
+        feedBackLabel.setPreferredSize(new Dimension(400, 30));
+        feedBackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 7;
+        add(feedBackLabel, gbc);
 
         File file = new File("serverAddress.txt");
         try (Scanner scanner = new Scanner(file)) {
@@ -55,7 +71,7 @@ class LoginPanel extends JPanel {
         }
 
         JButton joinButton = new JButton("Join");
-        joinButton.setBounds(350, 330, 100, 30);
+        joinButton.setPreferredSize(new Dimension(100, 30));
         joinButton.addActionListener(e -> {
             String name = nameInput.getText();
             String url = "ws://" + ipInput.getText() + ":" + portInput.getText() + "/action";
@@ -74,7 +90,12 @@ class LoginPanel extends JPanel {
             }
 
         });
-        add(joinButton);
+        gbc.gridy = 6;
+        add(joinButton, gbc);
         setVisible(true);
+    }
+
+    public void writeFeedback(String feedback) {
+        feedBackLabel.setText(feedback);
     }
 }

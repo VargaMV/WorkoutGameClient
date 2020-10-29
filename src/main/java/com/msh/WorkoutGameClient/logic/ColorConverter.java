@@ -2,7 +2,15 @@ package com.msh.WorkoutGameClient.logic;
 
 import com.msh.WorkoutGameClient.model.Color;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ColorConverter {
+
+    private static List<Color> darkColors = Arrays.asList(
+            Color.BLACK, Color.GREEN, Color.RED, Color.BLUE, Color.BROWN, Color.PURPLE, Color.NAVY, Color.MAROON
+    );
+
     public static java.awt.Color convertToAWT(Color color) {
         switch (color) {
             case GREEN:
@@ -41,5 +49,13 @@ public class ColorConverter {
                 return new java.awt.Color(128, 0, 0);
         }
         return java.awt.Color.PINK;
+    }
+
+    public static java.awt.Color determineTextColor(Color color) {
+        if (darkColors.contains(color)) {
+            return java.awt.Color.WHITE;
+        } else {
+            return java.awt.Color.BLACK;
+        }
     }
 }

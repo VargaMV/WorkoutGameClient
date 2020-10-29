@@ -3,10 +3,7 @@ package com.msh.WorkoutGameClient.gui;
 import com.msh.WorkoutGameClient.gui.listener.EvolveListener;
 import com.msh.WorkoutGameClient.gui.listener.OccupyListener;
 import com.msh.WorkoutGameClient.gui.listener.PlayerMoveListener;
-import com.msh.WorkoutGameClient.gui.mainPanelParts.ActionBoard;
-import com.msh.WorkoutGameClient.gui.mainPanelParts.GameField;
-import com.msh.WorkoutGameClient.gui.mainPanelParts.InformationBoard;
-import com.msh.WorkoutGameClient.gui.mainPanelParts.MiniMap;
+import com.msh.WorkoutGameClient.gui.mainPanelParts.*;
 import com.msh.WorkoutGameClient.logic.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -25,6 +22,7 @@ public class MainPanel extends JPanel {
     private MiniMap miniMap;
     private InformationBoard informationPanel;
     private ActionBoard actionsPanel;
+    private Header headerPanel;
     private WebSocketManager wsm;
 
     public MainPanel(Game game, WebSocketManager wsm) {
@@ -42,16 +40,19 @@ public class MainPanel extends JPanel {
         rightSideContainer.setLayout(new FlowLayout());
         rightSideContainer.setPreferredSize(new Dimension(300, 650));
 
+        headerPanel = new Header(game, wsm);
+        add(headerPanel, BorderLayout.NORTH);
+
         miniMap = new MiniMap(game);
         rightSideContainer.add(miniMap);
         informationPanel = new InformationBoard(game);
         rightSideContainer.add(informationPanel, BorderLayout.EAST);
-
+        rightSideContainer.setBackground(new Color(160, 160, 160));
         add(rightSideContainer, BorderLayout.EAST);
 
         gameFieldPanel = new GameField(game, wsm);
 
-        EvolveListener evolveListener = new EvolveListener(gameFieldPanel, game);
+        EvolveListener evolveListener = new EvolveListener(headerPanel, gameFieldPanel, game);
         OccupyListener occupyListener = new OccupyListener(new ArrayList<>(Arrays.asList(gameFieldPanel, miniMap, informationPanel)), game);
         //AddListener addListener = new AddListener(informationPanel, gameFieldPanel);*/
         Map<String, ActionListener> listeners = new HashMap<>();
@@ -60,7 +61,7 @@ public class MainPanel extends JPanel {
         //listeners.put("add", addListener);
 
         actionsPanel = new ActionBoard(game, wsm, listeners);
-        add(actionsPanel, BorderLayout.NORTH);
+        add(actionsPanel, BorderLayout.SOUTH);
 
         PlayerMoveListener moveListener = new PlayerMoveListener(informationPanel, miniMap, actionsPanel);
         gameFieldPanel.setMoveListener(moveListener);
@@ -83,6 +84,10 @@ public class MainPanel extends JPanel {
 
     public void updateMiniMap() {
         miniMap.drawMiniMap();
+    }
+
+    public void updateHeaderPanel() {
+        headerPanel.updateHeader();
     }
 
 }

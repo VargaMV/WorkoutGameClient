@@ -7,5 +7,6 @@ public enum MessageType {
     MOVE,
     OCCUPY,
     STOCK,
-    EXERCISE
+    EXERCISE,
+    VISION
 }

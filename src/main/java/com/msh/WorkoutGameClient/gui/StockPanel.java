@@ -114,7 +114,7 @@ public class StockPanel extends JPanel {
             int all = game.getTotalStockNumbers().get(exercise);
             int share = game.getSharePercentage(exercise);
             exerciseLabels[i].setText(String.format("%s  >>>  Share: %d %% (%d / %d)", exercise, share, stockNumber, all));
-            buyButtons[i].setEnabled(game.getMe().isAffordable(exercise));
+            buyButtons[i].setEnabled(game.getMe().isStockAffordable(exercise));
             buyButtons[i].setText(String.format("Buy (%d)", price));
             i++;
         }

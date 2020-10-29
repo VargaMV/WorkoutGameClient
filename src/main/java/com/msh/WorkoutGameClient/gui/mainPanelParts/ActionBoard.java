@@ -34,10 +34,14 @@ public class ActionBoard extends JPanel {
         });
         add(occupyButton);
 
-        evolveButton = new JButton("Evolve");
-        evolveButton.setBounds(100, 10, 80, 30);
+        evolveButton = new JButton("Vision ++");
+        evolveButton.setBounds(100, 10, 120, 30);
+        evolveButton.addActionListener(e -> {
+            wsm.sendEvolve();
+            updateButtons();
+        });
         evolveButton.addActionListener(listeners.get("evolve"));
-        //add(evolveButton);
+        add(evolveButton);
 
         /*JTextField moneyInput = new JTextField();
         moneyInput.setBounds(210, 10, 40, 30);
@@ -77,5 +81,6 @@ public class ActionBoard extends JPanel {
 
     public void updateButtons() {
         occupyButton.setEnabled(game.amIWorthy());
+        evolveButton.setEnabled(game.getMe().isVisionIncAffordable() && !game.getMe().isVisionMax());
     }
 }

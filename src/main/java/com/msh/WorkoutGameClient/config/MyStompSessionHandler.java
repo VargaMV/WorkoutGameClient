@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.config;
 
+import com.msh.WorkoutGameClient.gui.LoginPanel;
 import com.msh.WorkoutGameClient.gui.MainFrame;
 import com.msh.WorkoutGameClient.message.*;
 import com.msh.WorkoutGameClient.message.response.MapResponse;
@@ -78,6 +79,22 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         SimpleResponse msg = (SimpleResponse) payload;
         logger.info(msg.getFrom() + " : " + msg.getText());
         logger.info("Response:" + msg.getResponse());
+        MainFrame mainFrame = (MainFrame) gui;
+        switch (msg.getResponse()) {
+            case "SUB":
+                ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback("Subscribed to the game!");
+                break;
+            case "USED":
+                ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback("Already subscribed or the name is taken.");
+                break;
+            case "OFF":
+                ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback("The game has already started or it's full!");
+                break;
+            default:
+                ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback("");
+                break;
+
+        }
 
         switch (msg.getResponse()) {
             case "PLAYER":
@@ -87,22 +104,26 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 playerSet = true;
                 break;
             case "MAP":
-                MapResponse mapMsg = (MapResponse) payload;
-                Field[][] map = mapMsg.getMap();
-                game.setMap(map);
-                mapSet = true;
-                if (playerSet) {
-                    ((MainFrame) gui).updateMainPanel();
+                if (!allSet || !msg.getFrom().equals(game.getMe().getName())) {
+                    MapResponse mapMsg = (MapResponse) payload;
+                    Field[][] map = mapMsg.getMap();
+                    game.setMap(map);
+                    mapSet = true;
+                    if (playerSet) {
+                        ((MainFrame) gui).updateMainPanel();
+                    }
                 }
                 break;
             case "STOCK":
-                StockResponse stockMsg = (StockResponse) payload;
-                logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
-                Map<String, Integer> totalStocks = stockMsg.getStocks();
-                game.setTotalStockNumbers(totalStocks);
-                stockSet = true;
-                if (playerSet) {
-                    ((MainFrame) gui).updateStockPanel();
+                if (!allSet || !msg.getFrom().equals(game.getMe().getName())) {
+                    StockResponse stockMsg = (StockResponse) payload;
+                    logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
+                    Map<String, Integer> totalStocks = stockMsg.getStocks();
+                    game.setTotalStockNumbers(totalStocks);
+                    stockSet = true;
+                    if (playerSet) {
+                        ((MainFrame) gui).updateStockPanel();
+                    }
                 }
                 break;
         }

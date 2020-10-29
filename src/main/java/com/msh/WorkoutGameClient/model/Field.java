@@ -18,7 +18,7 @@ public class Field implements Serializable {
     private List<SimplePlayer> playersOnField;
 
     public Field() {
-        owner = new SimplePlayer("Mr.Nobody", Color.WHITE);
+        owner = new SimplePlayer("-", Color.WHITE);
         value = 0;
         playersOnField = new ArrayList<>();
     }

@@ -87,7 +87,7 @@ public class Game {
     }
 
     public void buyStock(String exercise) {
-        if (me.isAffordable(exercise)) {
+        if (me.isStockAffordable(exercise)) {
             int prevValue = totalStockNumbers.get(exercise);
             totalStockNumbers.put(exercise, prevValue + 1);
             int myPrevValue = me.getStockNumbers().get(exercise);

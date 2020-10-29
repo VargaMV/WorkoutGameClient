@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,9 +18,11 @@ public class Player implements Comparable<Player>, Serializable {
     private Coordinate position;
     private int money;
     private int currentScore;
+    private int fieldsOwned;
     private int totalScore;
     private int rangeOfVision;
     private boolean sqrRange;
+    private int visionIncPrice;
     private Map<String, Integer> exerciseNumbers = new LinkedHashMap<>();
     private Map<String, Integer> stockNumbers = new LinkedHashMap<>();
 
@@ -35,6 +36,7 @@ public class Player implements Comparable<Player>, Serializable {
         this.position = new Coordinate(0, 0);
         this.money = 0;
         this.currentScore = 0;
+        this.fieldsOwned = 0;
         this.totalScore = 0;
         this.rangeOfVision = 1;
     }
@@ -55,8 +57,13 @@ public class Player implements Comparable<Player>, Serializable {
         currentScore -= score;
     }
 
-    public boolean isAffordable(String exercise) {
+    public boolean isStockAffordable(String exercise) {
         return money >= PriceCalculator.calculateNext(stockNumbers.get(exercise));
+    }
+
+    public boolean isVisionIncAffordable() {
+        System.out.println("VP:" + visionIncPrice);
+        return money >= visionIncPrice;
     }
 
     public int getNextPrice(String exercise) {
@@ -69,11 +76,19 @@ public class Player implements Comparable<Player>, Serializable {
     }
 
     public void incRangeOfVision() {
-        int prevRange = rangeOfVision;
-        if (sqrRange) {
-            rangeOfVision = Math.min(2, rangeOfVision + 1);
+        if (!isVisionMax() && isVisionIncAffordable()) {
+            if (sqrRange) {
+                rangeOfVision++;
+                sqrRange = false;
+            } else {
+                sqrRange = true;
+            }
+            money -= visionIncPrice;
         }
-        sqrRange = !sqrRange || prevRange == 2;
+    }
+
+    public boolean isVisionMax() {
+        return (sqrRange && rangeOfVision == 2);
     }
 
     @Override

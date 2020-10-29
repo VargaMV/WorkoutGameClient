@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 public class InformationBoard extends JPanel {
 
     private final Game game;
-    private final JLabel myNameLabel;
+    private final JLabel fieldTitle;
     private final JLabel currentFieldValueLabel;
-    private final JLabel myCurrentValueLabel;
-    private final JLabel moneyLabel;
+    private final JLabel ownerLabel;
+    //private final JLabel moneyLabel;
     private final JLabel othersOnField;
 
     public InformationBoard(Game game){
@@ -23,25 +23,25 @@ public class InformationBoard extends JPanel {
         setPreferredSize(new Dimension(300, 350));
         setBackground(new Color(160, 160, 160));
 
-        myNameLabel = new JLabel("");
-        myNameLabel.setBounds(10, 20, 200, 30);
-        myNameLabel.setFont(new Font("Serif", Font.BOLD, 22));
-        add(myNameLabel);
-
-        myCurrentValueLabel = new JLabel("");
-        myCurrentValueLabel.setBounds(10, 60, 200, 15);
-        add(myCurrentValueLabel);
-
-        moneyLabel = new JLabel("");
-        moneyLabel.setBounds(10, 80, 200, 15);
-        add(moneyLabel);
+        fieldTitle = new JLabel("");
+        fieldTitle.setBounds(20, 20, 200, 30);
+        fieldTitle.setFont(new Font("Serif", Font.BOLD, 22));
+        add(fieldTitle);
 
         currentFieldValueLabel = new JLabel("");
-        currentFieldValueLabel.setBounds(10, 110, 200, 15);
+        currentFieldValueLabel.setBounds(20, 60, 200, 15);
+        currentFieldValueLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         add(currentFieldValueLabel);
 
+        ownerLabel = new JLabel("");
+        ownerLabel.setBounds(20, 85, 200, 15);
+        ownerLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        add(ownerLabel);
+
         othersOnField = new JLabel("");
-        othersOnField.setBounds(10, 130, 200, 75);
+        othersOnField.setBounds(20, 110, 200, 75);
+        othersOnField.setVerticalAlignment(SwingConstants.NORTH);
+        othersOnField.setFont(new Font("Arial", Font.PLAIN, 16));
         add(othersOnField);
 
         setVisible(true);
@@ -50,7 +50,12 @@ public class InformationBoard extends JPanel {
 
     public void updateInfo(){
         //TODO: run only once
-        myNameLabel.setText(game.getMe().getName());
+        fieldTitle.setText(
+                String.format(
+                        "FIELD [ %d , %d ]",
+                        game.getMe().getPosition().getX(), game.getMe().getPosition().getY()
+                )
+        );
 
         currentFieldValueLabel.setText(
                 String.format(
@@ -58,23 +63,24 @@ public class InformationBoard extends JPanel {
                         game.getField(game.getMe().getPosition()).getValue()
                 )
         );
-        myCurrentValueLabel.setText(
+        ownerLabel.setText(
                 String.format(
-                        "My current value: %d",
-                        game.getMe().getCurrentScore()
+                        "Owner: %s",
+                        game.getField(game.getMe().getPosition()).getOwner().getName()
                 )
         );
-        moneyLabel.setText(
+        /*moneyLabel.setText(
                 String.format(
                         "My current money: %d",
                         game.getMe().getMoney()
                 )
-        );
+        );*/
         othersOnField.setText(
-                "<html>Others on Field:<br>" +
+                "<html>Other players:<br>" +
                         game.getField(game.getMe().getPosition()).getPlayersOnField().stream()
                                 .map(SimplePlayer::getName)
                                 .filter(name -> !name.equals(game.getMe().getName()))
+                                .map(name -> (" > " + name))
                                 .collect(Collectors.joining("<br>"))
                         + "</html>"
         );

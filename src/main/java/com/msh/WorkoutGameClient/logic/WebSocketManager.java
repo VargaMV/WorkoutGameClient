@@ -60,6 +60,10 @@ public class WebSocketManager {
         session.send("/app/action/exercise", new ExerciseMessage(game.getMe().getName(), "I workout!", exercise, amount));
     }
 
+    public void sendEvolve() {
+        session.send("/app/action/vision", new Message(MessageType.STOCK, game.getMe().getName(), "evolve"));
+    }
+
     public void setGUI(JFrame gui) {
         this.gui = gui;
     }

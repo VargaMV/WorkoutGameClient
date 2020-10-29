@@ -57,7 +57,7 @@ public class GameField extends JPanel {
 
         for (int i = minX; i <= maxX; i++) {
             for (int j = minY; j <= maxY; j++) {
-                JButton button = new JButton(i + "" + j);
+                JButton button = new JButton();
                 button.setBounds(leftMargin + (2 + i - posX) * shift, topMargin + (2 + j - posY) * shift, buttonSize, buttonSize);
                 button.setBorderPainted(false);
                 button.setFocusPainted(false);

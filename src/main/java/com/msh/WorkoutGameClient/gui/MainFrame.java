@@ -2,11 +2,13 @@ package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.logic.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+@Getter
 public class MainFrame extends JFrame {
 
     private Game game;
@@ -22,10 +24,10 @@ public class MainFrame extends JFrame {
 
         super("Workout Game Client");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 650);
-        setLocationRelativeTo(null);
-        //setLayout(null);
-        //createMenuBar();
+        setMinimumSize(new Dimension(800, 600));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setUndecorated(true);
+        //setLocationRelativeTo(null);
 
         this.game = game;
         cardLayout = new CardLayout();
@@ -37,18 +39,20 @@ public class MainFrame extends JFrame {
 
 
         containerPanel = new JPanel(cardLayout);
-        containerPanel.setSize(800, 650);
+        //containerPanel.setSize(800, 650);
         JScrollPane scrollableStock = new JScrollPane(stockPanel);
         scrollableStock.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollableStock.getVerticalScrollBar().setUnitIncrement(20);
         JScrollPane scrollableWorkout = new JScrollPane(workoutPanel);
         scrollableWorkout.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollableWorkout.getVerticalScrollBar().setUnitIncrement(20);
 
         containerPanel.add(loginPanel, "login");
         containerPanel.add(mainPanel, "main");
         containerPanel.add(scrollableStock, "stock");
         containerPanel.add(scrollableWorkout, "workout");
 
-        add(containerPanel);
+        add(containerPanel, BorderLayout.CENTER);
         setVisible(true);
     }
 
@@ -57,6 +61,7 @@ public class MainFrame extends JFrame {
         ((MainPanel) mainPanel).updateActionBoard();
         ((MainPanel) mainPanel).updateMap();
         ((MainPanel) mainPanel).updateMiniMap();
+        ((MainPanel) mainPanel).updateHeaderPanel();
     }
 
     public void updateStockPanel() {
@@ -73,6 +78,8 @@ public class MainFrame extends JFrame {
         ((MainPanel) mainPanel).updateInformationPanel();
         ((MainPanel) mainPanel).updateActionBoard();
         ((MainPanel) mainPanel).updateMap();
+        ((MainPanel) mainPanel).updateMiniMap();
+        ((MainPanel) mainPanel).updateHeaderPanel();
     }
 
     public void switchToWorkout() {
