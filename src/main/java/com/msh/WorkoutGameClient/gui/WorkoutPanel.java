@@ -11,6 +11,8 @@ class WorkoutPanel extends JPanel {
     private final Game game;
     private WebSocketManager wsm;
     private JLabel[] exerciseLabels;
+    private JLabel[] exerciseNumberLabels;
+    private JLabel[] valueLabels;
     private JButton[] saveButtons;
     private JTextField[] inputFields;
 
@@ -21,12 +23,23 @@ class WorkoutPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         int exerciseNumber = game.getExerciseValues().size();
         exerciseLabels = new JLabel[exerciseNumber];
+        exerciseNumberLabels = new JLabel[exerciseNumber];
+        valueLabels = new JLabel[exerciseNumber];
         saveButtons = new JButton[exerciseNumber];
         inputFields = new JTextField[exerciseNumber];
 
         int i = 0;
         for (var exercise : game.getExerciseValues().keySet()) {
             exerciseLabels[i] = new JLabel();
+            exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
+            exerciseNumberLabels[i] = new JLabel();
+            exerciseNumberLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
+            exerciseNumberLabels[i].setPreferredSize(new Dimension(70, 30));
+            exerciseNumberLabels[i].setHorizontalAlignment(SwingConstants.CENTER);
+            valueLabels[i] = new JLabel();
+            valueLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
+            valueLabels[i].setPreferredSize(new Dimension(100, 30));
+            valueLabels[i].setHorizontalAlignment(SwingConstants.CENTER);
             saveButtons[i] = new JButton("Save");
             int finalI = i;
             saveButtons[i].addActionListener(e -> {
@@ -40,13 +53,13 @@ class WorkoutPanel extends JPanel {
 
             gbc.anchor = GridBagConstraints.WEST;
 
-            int col = (i % 2) * 3;
+            int col = (i % 2) * 5;
             int row = Math.floorDiv(i, 2);
             gbc.gridx = col;
             gbc.gridy = row;
             gbc.ipadx = 10;
             gbc.ipady = 10;
-            gbc.insets = new Insets(10, 10, 0, 0);
+            gbc.insets = new Insets(10, 10 + (i % 2) * 30, 0, 0);
             add(exerciseLabels[i], gbc);
 
             gbc.gridx = col + 1;
@@ -54,14 +67,28 @@ class WorkoutPanel extends JPanel {
             gbc.ipadx = 10;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
-            add(saveButtons[i], gbc);
+            add(exerciseNumberLabels[i], gbc);
 
             gbc.gridx = col + 2;
+            gbc.gridy = row;
+            gbc.ipadx = 10;
+            gbc.ipady = 10;
+            gbc.insets = new Insets(10, 10, 0, 0);
+            add(valueLabels[i], gbc);
+
+            gbc.gridx = col + 3;
             gbc.gridy = row;
             gbc.ipadx = 60;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
             add(inputFields[i], gbc);
+
+            gbc.gridx = col + 4;
+            gbc.gridy = row;
+            gbc.ipadx = 10;
+            gbc.ipady = 10;
+            gbc.insets = new Insets(10, 10, 0, 0);
+            add(saveButtons[i], gbc);
 
             i++;
         }
@@ -76,8 +103,16 @@ class WorkoutPanel extends JPanel {
             int records = game.getMe().getExerciseNumbers().get(exercise);
             int ownStock = game.getMe().getStockNumbers().get(exercise);
             int allStock = game.getTotalStockNumber(exercise);
+            int share = game.getSharePercentage(exercise);
             int myValue = (int) Math.ceil(value * ownStock / (double) allStock);
-            exerciseLabels[i].setText(String.format("%s : %d DefValue: %d OwnValue: %d", exercise, records, value, myValue));
+            exerciseLabels[i].setText(String.format("%s [%d%%]", exercise.toUpperCase(), share));
+            exerciseNumberLabels[i].setText(String.valueOf(records));
+            valueLabels[i].setText(String.format("%d / rep", myValue));
+            if (myValue == 0) {
+                valueLabels[i].setForeground(Color.RED);
+            } else {
+                valueLabels[i].setForeground(Color.BLACK);
+            }
             i++;
         }
     }
