@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui;
 
+import com.msh.WorkoutGameClient.gui.listener.ConvertListener;
 import com.msh.WorkoutGameClient.gui.listener.EvolveListener;
 import com.msh.WorkoutGameClient.gui.listener.OccupyListener;
 import com.msh.WorkoutGameClient.gui.listener.PlayerMoveListener;
@@ -53,12 +54,12 @@ public class MainPanel extends JPanel {
         gameFieldPanel = new GameField(game, wsm);
 
         EvolveListener evolveListener = new EvolveListener(headerPanel, gameFieldPanel, game);
-        OccupyListener occupyListener = new OccupyListener(new ArrayList<>(Arrays.asList(gameFieldPanel, miniMap, informationPanel)), game);
-        //AddListener addListener = new AddListener(informationPanel, gameFieldPanel);*/
+        OccupyListener occupyListener = new OccupyListener(new ArrayList<>(Arrays.asList(gameFieldPanel, miniMap, informationPanel, headerPanel)), game);
+        ConvertListener convertListener = new ConvertListener(informationPanel, gameFieldPanel, headerPanel);
         Map<String, ActionListener> listeners = new HashMap<>();
         listeners.put("occupy", occupyListener);
         listeners.put("evolve", evolveListener);
-        //listeners.put("add", addListener);
+        listeners.put("convert", convertListener);
 
         actionsPanel = new ActionBoard(game, wsm, listeners);
         add(actionsPanel, BorderLayout.SOUTH);

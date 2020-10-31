@@ -57,12 +57,15 @@ public class Player implements Comparable<Player>, Serializable {
         currentScore -= score;
     }
 
+    public void incFieldsOwned() {
+        fieldsOwned++;
+    }
+
     public boolean isStockAffordable(String exercise) {
         return money >= PriceCalculator.calculateNext(stockNumbers.get(exercise));
     }
 
     public boolean isVisionIncAffordable() {
-        System.out.println("VP:" + visionIncPrice);
         return money >= visionIncPrice;
     }
 

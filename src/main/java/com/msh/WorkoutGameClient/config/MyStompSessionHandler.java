@@ -102,6 +102,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 Player player = playerMsg.getPlayer();
                 game.setMe(player);
                 playerSet = true;
+                ((MainFrame) gui).updateMainPanel();
                 break;
             case "MAP":
                 if (!allSet || !msg.getFrom().equals(game.getMe().getName())) {

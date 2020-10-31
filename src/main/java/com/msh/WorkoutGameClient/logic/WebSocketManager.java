@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 
 public class WebSocketManager {
 
-    //private static final String URL = "ws://localhost:8082/action";
     private Game game;
     private WebSocketClient client;
     private WebSocketStompClient stompClient;
@@ -60,8 +59,13 @@ public class WebSocketManager {
         session.send("/app/action/exercise", new ExerciseMessage(game.getMe().getName(), "I workout!", exercise, amount));
     }
 
-    public void sendEvolve() {
-        session.send("/app/action/vision", new Message(MessageType.STOCK, game.getMe().getName(), "evolve"));
+    public void sendVisionInc() {
+        session.send("/app/action/vision", new Message(MessageType.STOCK, game.getMe().getName(), "Increase vision!"));
+    }
+
+    public void sendConvert(int amount) {
+        session.send("/app/action/convert", new ConvertMessage(game.getMe().getName(), "Convert score to money!", amount));
+
     }
 
     public void setGUI(JFrame gui) {

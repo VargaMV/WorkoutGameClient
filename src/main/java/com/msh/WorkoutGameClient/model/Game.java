@@ -55,6 +55,7 @@ public class Game {
         } else {
             updateCurrentFieldValue(me.getCurrentScore(), false);
             updateCurrentFieldOwner();
+            me.incFieldsOwned();
         }
         me.setCurrentScore(0);
     }

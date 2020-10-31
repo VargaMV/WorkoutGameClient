@@ -16,6 +16,7 @@ public class Header extends JPanel {
     private JLabel playerNameLabel;
     private JLabel moneyLabel;
     private JLabel scoreLabel;
+    private JLabel fieldsLabel;
 
     public Header(Game game, WebSocketManager wsm) {
         this.game = game;
@@ -41,6 +42,12 @@ public class Header extends JPanel {
         scoreLabel.setPreferredSize(new Dimension(150, 50));
         add(scoreLabel);
 
+        fieldsLabel = new JLabel("");
+        fieldsLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        fieldsLabel.setVerticalAlignment(SwingConstants.CENTER);
+        fieldsLabel.setPreferredSize(new Dimension(150, 50));
+        add(fieldsLabel);
+
         setVisible(true);
     }
 
@@ -57,5 +64,9 @@ public class Header extends JPanel {
         moneyLabel.setText("money: $" + game.getMe().getMoney());
         moneyLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         moneyLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
+
+        fieldsLabel.setText("fields: " + game.getMe().getFieldsOwned());
+        fieldsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        fieldsLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
     }
 }

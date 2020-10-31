@@ -16,6 +16,7 @@ public class ActionBoard extends JPanel {
     private JButton occupyButton;
     private JButton evolveButton;
     private JLabel messageLabel;
+    private JTextField moneyInput;
 
     public ActionBoard(Game game, WebSocketManager wsm, Map<String, ActionListener> listeners) {
         this.game = game;
@@ -35,35 +36,34 @@ public class ActionBoard extends JPanel {
         add(occupyButton);
 
         evolveButton = new JButton("Vision ++");
-        evolveButton.setBounds(100, 10, 120, 30);
+        evolveButton.setBounds(100, 10, 100, 30);
         evolveButton.addActionListener(e -> {
-            wsm.sendEvolve();
+            wsm.sendVisionInc();
             updateButtons();
         });
         evolveButton.addActionListener(listeners.get("evolve"));
         add(evolveButton);
 
-        /*JTextField moneyInput = new JTextField();
-        moneyInput.setBounds(210, 10, 40, 30);
-        add(moneyInput);*/
-
-        /*JButton convertButton = new JButton("Convert");
-        convertButton.setBounds(110, 10, 80, 30);
-        convertButton.addActionListener(listeners.get("add"));
+        JButton convertButton = new JButton("Convert");
+        convertButton.setBounds(210, 10, 80, 30);
+        convertButton.addActionListener(listeners.get("convert"));
         convertButton.addActionListener(e -> {
-            int value = game.getCurrentValue();
+            //TODO: convertScoreToMoney to game
+            int value = game.getMe().getCurrentScore();
             try {
                 int amountConverted = Integer.parseInt(moneyInput.getText());
                 amountConverted = Math.min(value, amountConverted);
-                game.setCurrentValue(value - amountConverted);
-                game.incMoney(amountConverted);
+                wsm.sendConvert(amountConverted);
+                game.getMe().decScore(amountConverted);
+                game.getMe().incMoney(amountConverted);
                 moneyInput.setText("");
                 messageLabel.setText("");
                 updateButtons();
             } catch (NumberFormatException ex) {
                 if ("".equals(moneyInput.getText())) {
-                    game.incMoney(game.getCurrentValue());
-                    game.setCurrentValue(0);
+                    wsm.sendConvert(game.getMe().getCurrentScore());
+                    game.getMe().incMoney(game.getMe().getCurrentScore());
+                    game.getMe().setCurrentScore(0);
                     updateButtons();
                 } else {
                     messageLabel.setText("Integer number needed!");
@@ -71,10 +71,14 @@ public class ActionBoard extends JPanel {
             }
 
         });
-        add(convertButton);*/
+        add(convertButton);
+
+        moneyInput = new JTextField();
+        moneyInput.setBounds(300, 10, 50, 30);
+        add(moneyInput);
 
         messageLabel = new JLabel("");
-        messageLabel.setBounds(260, 10, 200, 30);
+        messageLabel.setBounds(360, 10, 200, 30);
         add(messageLabel);
         setVisible(true);
     }
