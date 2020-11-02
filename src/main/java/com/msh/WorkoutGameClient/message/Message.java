@@ -6,17 +6,22 @@ import org.springframework.stereotype.Component;
 
 @Getter @Setter
 public class Message {
-    MsgType type;
+    MessageType type;
     String from;
     String text;
 
-    public Message() {
+    Message() {
 
     }
 
-    public Message(MsgType type, String from, String text) {
+    public Message(MessageType type, String from, String text) {
         this.type = type;
         this.from = from;
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return from + ": " + text + ", " + type;
     }
 }

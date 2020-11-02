@@ -2,9 +2,13 @@ package com.msh.WorkoutGameClient.message;
 
 import org.springframework.stereotype.Component;
 
-public enum MsgType {
+public enum MessageType {
     JOIN,
     MOVE,
     OCCUPY,
-    STOCK_BUY,
+    STOCK,
+    EXERCISE,
+    VISION,
+    CONVERT,
+    TIME
 }

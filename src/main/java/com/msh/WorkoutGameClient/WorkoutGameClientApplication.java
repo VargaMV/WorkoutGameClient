@@ -1,13 +1,17 @@
 package com.msh.WorkoutGameClient;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class WorkoutGameClientApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WorkoutGameClientApplication.class, args);
-	}
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(WorkoutGameClientApplication.class);
+        builder.headless(false);
+        ConfigurableApplicationContext context = builder.run(args);
+        //SpringApplication.run(WorkoutGameClientApplication.class, args);
+    }
 
 }
