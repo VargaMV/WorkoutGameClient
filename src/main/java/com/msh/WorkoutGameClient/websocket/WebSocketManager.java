@@ -1,6 +1,6 @@
-package com.msh.WorkoutGameClient.logic;
+package com.msh.WorkoutGameClient.websocket;
 
-import com.msh.WorkoutGameClient.config.MyStompSessionHandler;
+import com.msh.WorkoutGameClient.websocket.MyStompSessionHandler;
 import com.msh.WorkoutGameClient.message.*;
 import com.msh.WorkoutGameClient.model.Coordinate;
 import com.msh.WorkoutGameClient.model.Game;
@@ -14,7 +14,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import javax.swing.*;
 import javax.websocket.ContainerProvider;
 import javax.websocket.WebSocketContainer;
-import java.util.concurrent.ExecutionException;
 
 public class WebSocketManager {
 

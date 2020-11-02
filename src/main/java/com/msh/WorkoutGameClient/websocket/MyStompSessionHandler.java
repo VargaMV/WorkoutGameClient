@@ -1,4 +1,4 @@
-package com.msh.WorkoutGameClient.config;
+package com.msh.WorkoutGameClient.websocket;
 
 import com.msh.WorkoutGameClient.gui.LoginPanel;
 import com.msh.WorkoutGameClient.gui.MainFrame;

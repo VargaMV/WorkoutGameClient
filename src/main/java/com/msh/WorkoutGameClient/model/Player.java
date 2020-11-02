@@ -92,6 +92,10 @@ public class Player implements Comparable<Player>, Serializable {
         }
     }
 
+    public java.awt.Color getAwtColor() {
+        return ColorConverter.convertToAWT(color);
+    }
+
     public boolean isVisionMax() {
         return (sqrRange && rangeOfVision == 2);
     }
@@ -112,10 +116,6 @@ public class Player implements Comparable<Player>, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public java.awt.Color getAwtColor() {
-        return ColorConverter.convertToAWT(color);
     }
 
     @Override

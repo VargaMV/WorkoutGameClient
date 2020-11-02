@@ -1,11 +1,10 @@
 package com.msh.WorkoutGameClient.gui;
 
-import com.msh.WorkoutGameClient.logic.WebSocketManager;
+import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;

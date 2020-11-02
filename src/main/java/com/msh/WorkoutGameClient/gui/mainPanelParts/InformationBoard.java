@@ -14,7 +14,6 @@ public class InformationBoard extends JPanel {
     private final JLabel fieldTitle;
     private final JLabel currentFieldValueLabel;
     private final JLabel ownerLabel;
-    //private final JLabel moneyLabel;
     private final JLabel othersOnField;
 
     public InformationBoard(Game game){
@@ -49,7 +48,6 @@ public class InformationBoard extends JPanel {
     }
 
     public void updateInfo(){
-        //TODO: run only once
         fieldTitle.setText(
                 String.format(
                         "FIELD [ %d , %d ]",
@@ -69,12 +67,6 @@ public class InformationBoard extends JPanel {
                         game.getField(game.getMe().getPosition()).getOwner().getName()
                 )
         );
-        /*moneyLabel.setText(
-                String.format(
-                        "My current money: %d",
-                        game.getMe().getMoney()
-                )
-        );*/
         othersOnField.setText(
                 "<html>Other players:<br>" +
                         game.getField(game.getMe().getPosition()).getPlayersOnField().stream()

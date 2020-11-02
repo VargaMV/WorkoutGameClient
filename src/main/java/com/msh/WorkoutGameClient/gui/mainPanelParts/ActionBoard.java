@@ -1,6 +1,6 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
-import com.msh.WorkoutGameClient.logic.WebSocketManager;
+import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;

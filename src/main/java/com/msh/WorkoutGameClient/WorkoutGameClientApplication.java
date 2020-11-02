@@ -11,7 +11,6 @@ public class WorkoutGameClientApplication {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(WorkoutGameClientApplication.class);
         builder.headless(false);
         ConfigurableApplicationContext context = builder.run(args);
-        //SpringApplication.run(WorkoutGameClientApplication.class, args);
     }
 
 }

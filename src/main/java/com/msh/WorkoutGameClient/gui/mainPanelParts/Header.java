@@ -1,13 +1,11 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
 import com.msh.WorkoutGameClient.logic.ColorConverter;
-import com.msh.WorkoutGameClient.logic.WebSocketManager;
+import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.Map;
 
 public class Header extends JPanel {
 
