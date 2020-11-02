@@ -35,8 +35,8 @@ public class ActionBoard extends JPanel {
         });
         add(occupyButton);
 
-        evolveButton = new JButton("Vision ++");
-        evolveButton.setBounds(100, 10, 100, 30);
+        evolveButton = new JButton();
+        evolveButton.setBounds(100, 10, 160, 30);
         evolveButton.addActionListener(e -> {
             wsm.sendVisionInc();
             updateButtons();
@@ -45,7 +45,7 @@ public class ActionBoard extends JPanel {
         add(evolveButton);
 
         JButton convertButton = new JButton("Convert");
-        convertButton.setBounds(210, 10, 80, 30);
+        convertButton.setBounds(270, 10, 80, 30);
         convertButton.addActionListener(listeners.get("convert"));
         convertButton.addActionListener(e -> {
             //TODO: convertScoreToMoney to game
@@ -74,11 +74,11 @@ public class ActionBoard extends JPanel {
         add(convertButton);
 
         moneyInput = new JTextField();
-        moneyInput.setBounds(300, 10, 50, 30);
+        moneyInput.setBounds(360, 10, 50, 30);
         add(moneyInput);
 
         messageLabel = new JLabel("");
-        messageLabel.setBounds(360, 10, 200, 30);
+        messageLabel.setBounds(420, 10, 200, 30);
         add(messageLabel);
         setVisible(true);
     }
@@ -86,5 +86,6 @@ public class ActionBoard extends JPanel {
     public void updateButtons() {
         occupyButton.setEnabled(game.amIWorthy());
         evolveButton.setEnabled(game.getMe().isVisionIncAffordable() && !game.getMe().isVisionMax());
+        evolveButton.setText(String.format("Vision ++ ($%d)", game.getMe().getVisionIncPrice()));
     }
 }

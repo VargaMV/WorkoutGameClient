@@ -9,5 +9,6 @@ public enum MessageType {
     STOCK,
     EXERCISE,
     VISION,
-    CONVERT
+    CONVERT,
+    TIME
 }

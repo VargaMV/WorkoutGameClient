@@ -7,6 +7,7 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 
 @Getter
 public class MainFrame extends JFrame {
@@ -27,7 +28,7 @@ public class MainFrame extends JFrame {
         setMinimumSize(new Dimension(800, 600));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //setUndecorated(true);
-        //setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
         this.game = game;
         cardLayout = new CardLayout();
@@ -39,7 +40,6 @@ public class MainFrame extends JFrame {
 
 
         containerPanel = new JPanel(cardLayout);
-        //containerPanel.setSize(800, 650);
         JScrollPane scrollableStock = new JScrollPane(stockPanel);
         scrollableStock.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollableStock.getVerticalScrollBar().setUnitIncrement(20);
@@ -54,6 +54,21 @@ public class MainFrame extends JFrame {
 
         add(containerPanel, BorderLayout.CENTER);
         setVisible(true);
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(WindowEvent winEvt) {
+                if (game.isRetrievedDataFromServer()) {
+                    wsm.sendSecondsUntilMove(game.getMe().getSecondsUntilMove());
+                }
+                System.exit(0);
+            }
+        });
+    }
+
+    public void initPanels() {
+        ((WorkoutPanel) workoutPanel).init();
+        ((StockPanel) stockPanel).init();
+        ((MainPanel) mainPanel).initMap();
     }
 
     public void updateMainPanel() {
@@ -96,7 +111,12 @@ public class MainFrame extends JFrame {
         menuBar.add(fileMenu);
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.addActionListener(e -> System.exit(0));
+        exitMenuItem.addActionListener(e -> {
+            if (game.isRetrievedDataFromServer()) {
+                wsm.sendSecondsUntilMove(game.getMe().getSecondsUntilMove());
+            }
+            System.exit(0);
+        });
         fileMenu.add(exitMenuItem);
 
         JMenu panelsMenu = new JMenu("Panels");

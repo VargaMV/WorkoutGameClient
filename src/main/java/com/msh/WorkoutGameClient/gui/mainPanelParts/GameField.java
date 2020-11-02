@@ -18,14 +18,25 @@ public class GameField extends JPanel {
     private ActionListener listener;
     private WebSocketManager wsm;
     private JLabel posLabel;
+    private JLabel timeLabel;
+    private Timer timer;
 
     public GameField(Game game, WebSocketManager wsm) {
         this.game = game;
         this.wsm = wsm;
         posLabel = new JLabel();
+        timeLabel = new JLabel();
         setLayout(null);
         setPreferredSize(new Dimension(500, 500));
         setBackground(Color.GRAY);
+        timer = new Timer(1000, e -> {
+            game.secondPast();
+            timeLabel.setText(String.format("Until move: %d s", game.getMe().getSecondsUntilMove()));
+            if (game.getMe().getSecondsUntilMove() <= 0) {
+                timer.stop();
+                drawMap();
+            }
+        });
         listener = e -> System.out.println("MoveListener needs to be set");
         addComponentListener(new MapResizeListener(game, this));
         setVisible(true);
@@ -33,6 +44,10 @@ public class GameField extends JPanel {
 
     public void setMoveListener(ActionListener listener) {
         this.listener = listener;
+    }
+
+    public void init() {
+        timer.start();
     }
 
     public void drawMap() {
@@ -65,6 +80,8 @@ public class GameField extends JPanel {
                 int finalI = i;
                 button.addActionListener(listener);
                 button.addActionListener(e -> {
+                    game.resetTimer();
+                    timer.start();
                     Coordinate prevPos = game.getMe().getPosition();
                     Coordinate newPos = new Coordinate(finalI, finalJ);
                     game.getMe().setPosition(newPos);
@@ -95,7 +112,7 @@ public class GameField extends JPanel {
                         button.setBorderPainted(true);
                         button.setBorder(BorderFactory.createLineBorder(fields[i][j].getPlayersOnField().get(0).getAwtColor(), 3));
                     }
-                    if (game.getMe().getCurrentScore() > 0) {
+                    if (game.getMe().getCurrentScore() > 0 || game.getMe().getSecondsUntilMove() > 0) {
                         button.setEnabled(false);
                     } else {
                         button.setBackground(fields[i][j].getAwtColor());
@@ -112,6 +129,10 @@ public class GameField extends JPanel {
         posLabel.setText(String.format("Current position: (%d, %d)", posX, posY));
         posLabel.setBounds(20, 10, 200, 30);
         add(posLabel);
+
+        timeLabel.setText(String.format("Until move: %d s", game.getMe().getSecondsUntilMove()));
+        timeLabel.setBounds(this.getSize().width - 210, 10, 200, 30);
+        add(timeLabel);
 
         repaint();
         revalidate();

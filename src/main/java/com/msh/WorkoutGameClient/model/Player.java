@@ -23,6 +23,7 @@ public class Player implements Comparable<Player>, Serializable {
     private int rangeOfVision;
     private boolean sqrRange;
     private int visionIncPrice;
+    private int secondsUntilMove;
     private Map<String, Integer> exerciseNumbers = new LinkedHashMap<>();
     private Map<String, Integer> stockNumbers = new LinkedHashMap<>();
 
@@ -39,6 +40,7 @@ public class Player implements Comparable<Player>, Serializable {
         this.fieldsOwned = 0;
         this.totalScore = 0;
         this.rangeOfVision = 1;
+        this.secondsUntilMove = 0;
     }
 
     public void incMoney(int earning) {

@@ -65,6 +65,10 @@ public class WebSocketManager {
 
     public void sendConvert(int amount) {
         session.send("/app/action/convert", new ConvertMessage(game.getMe().getName(), "Convert score to money!", amount));
+    }
+
+    public void sendSecondsUntilMove(int seconds) {
+        session.send("/app/action/time", new TimeMessage(game.getMe().getName(), "Time until move!", seconds));
 
     }
 

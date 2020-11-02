@@ -4,7 +4,6 @@ import com.msh.WorkoutGameClient.logic.PriceCalculator;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.File;
 import java.util.*;
 
 @Getter
@@ -12,24 +11,13 @@ import java.util.*;
 public class Game {
 
     private Field[][] map = new Field[1][1];
-    private Player me = new Player("TEST", Color.BLUE);
+    private Player me = new Player("DEFAULT", Color.BLUE);
     private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
     private Map<String, Integer> exerciseValues = new LinkedHashMap<>();
     private boolean retrievedDataFromServer = false;
 
     public Game() {
-        File data = new File("data.csv");
-        try (Scanner scanner = new Scanner(data)) {
-            while (scanner.hasNextLine()) {
-                String dataLine = scanner.nextLine();
-                String exercise = dataLine.split(",")[0].trim();
-                int value = Integer.parseInt(dataLine.split(",")[1]);
-                totalStockNumbers.put(exercise, 0);
-                exerciseValues.put(exercise, value);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 
     public Field getField(int i, int j) {
@@ -97,6 +85,14 @@ public class Game {
             int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
             me.decMoney(price);
         }
+    }
+
+    public void resetTimer() {
+        me.setSecondsUntilMove(120);
+    }
+
+    public void secondPast() {
+        me.setSecondsUntilMove(Math.max(0, me.getSecondsUntilMove() - 1));
     }
 
     @Override

@@ -3,10 +3,10 @@ package com.msh.WorkoutGameClient.config;
 import com.msh.WorkoutGameClient.gui.LoginPanel;
 import com.msh.WorkoutGameClient.gui.MainFrame;
 import com.msh.WorkoutGameClient.message.*;
+import com.msh.WorkoutGameClient.message.response.ExerciseInfoResponse;
 import com.msh.WorkoutGameClient.message.response.MapResponse;
 import com.msh.WorkoutGameClient.message.response.PlayerResponse;
 import com.msh.WorkoutGameClient.message.response.SimpleResponse;
-import com.msh.WorkoutGameClient.message.response.StockResponse;
 import com.msh.WorkoutGameClient.model.Field;
 import com.msh.WorkoutGameClient.model.Game;
 import com.msh.WorkoutGameClient.model.Player;
@@ -28,6 +28,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     private boolean mapSet = false;
     private boolean playerSet = false;
     private boolean stockSet = false;
+    private boolean exerciseSet = false;
     private boolean allSet = false;
 
     public MyStompSessionHandler(Game game, String name, JFrame gui) {
@@ -44,6 +45,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         stompSession.subscribe("/public/stock", this);
         stompSession.subscribe("/private/map/" + name, this);
         stompSession.subscribe("/private/player/" + name, this);
+        stompSession.subscribe("/private/exercise/" + name, this);
         logger.info("Subscribed to /public");
         stompSession.send("/app/action", new Message(MessageType.JOIN, name, "I want to play!"));
         logger.info("Join message sent to webSocket server");
@@ -69,8 +71,8 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 return MapResponse.class;
             } else if (destination[2].equals("player")) {
                 return PlayerResponse.class;
-            } else if (destination[2].equals("stock")) {
-                return StockResponse.class;
+            } else if (destination[2].equals("stock") || destination[2].equals("exercise")) {
+                return ExerciseInfoResponse.class;
             }
         }
         return SimpleResponse.class;
@@ -104,7 +106,9 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 Player player = playerMsg.getPlayer();
                 game.setMe(player);
                 playerSet = true;
-                ((MainFrame) gui).updateMainPanel();
+                if (allSet) {
+                    ((MainFrame) gui).updateMainPanel();
+                }
                 break;
             case "MAP":
                 if (!allSet || !msg.getFrom().equals(game.getMe().getName())) {
@@ -112,28 +116,39 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                     Field[][] map = mapMsg.getMap();
                     game.setMap(map);
                     mapSet = true;
-                    if (playerSet) {
+                    if (playerSet && allSet) {
                         ((MainFrame) gui).updateMainPanel();
                     }
                 }
                 break;
             case "STOCK":
                 if (!allSet || !msg.getFrom().equals(game.getMe().getName())) {
-                    StockResponse stockMsg = (StockResponse) payload;
-                    logger.info(stockMsg.getFrom() + " : " + stockMsg.getText());
-                    Map<String, Integer> totalStocks = stockMsg.getStocks();
+                    ExerciseInfoResponse stockMsg = (ExerciseInfoResponse) payload;
+                    Map<String, Integer> totalStocks = stockMsg.getInformation();
                     game.setTotalStockNumbers(totalStocks);
                     stockSet = true;
-                    if (playerSet) {
+                    System.out.println(playerSet);
+                    System.out.println(allSet);
+                    if (playerSet && allSet) {
+                        System.out.println("HERE YOU GO!");
                         ((MainFrame) gui).updateStockPanel();
                     }
+                }
+                break;
+            case "EXERCISE":
+                if (!allSet) {
+                    ExerciseInfoResponse exerciseMsg = (ExerciseInfoResponse) payload;
+                    Map<String, Integer> exerciseValues = exerciseMsg.getInformation();
+                    game.setExerciseValues(exerciseValues);
+                    exerciseSet = true;
                 }
                 break;
         }
 
 
         //when joining
-        if (gui != null && playerSet && mapSet && stockSet && !allSet) {
+        if (gui != null && playerSet && mapSet && stockSet && exerciseSet && !allSet) {
+            ((MainFrame) gui).initPanels();
             ((MainFrame) gui).createMenuBar();
             ((MainFrame) gui).updateMainPanel();
             ((MainFrame) gui).updateStockPanel();

@@ -9,6 +9,8 @@ import java.awt.*;
 public class StockPanel extends JPanel {
 
     private Game game;
+    private WebSocketManager wsm;
+    private JPanel manager;
     private JLabel moneyLabel;
     private JLabel[] exerciseLabels;
     private JButton[] buyButtons;
@@ -44,18 +46,24 @@ public class StockPanel extends JPanel {
 
     public StockPanel(Game game, WebSocketManager wsm) {
         this.game = game;
-        int exerciseTypeNumber = game.getTotalStockNumbers().size();
-        exerciseLabels = new JLabel[exerciseTypeNumber];
-        buyButtons = new JButton[exerciseTypeNumber];
+        this.wsm = wsm;
         setLayout(new GridLayout());
 
-        JPanel manager = new JPanel();
+        manager = new JPanel();
         add(manager);
 
         bars = new BarsJPanel();
         add(bars);
 
         manager.setLayout(new GridBagLayout());
+        setVisible(true);
+    }
+
+    public void init() {
+        int exerciseTypeNumber = game.getTotalStockNumbers().size();
+        exerciseLabels = new JLabel[exerciseTypeNumber];
+        buyButtons = new JButton[exerciseTypeNumber];
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -81,7 +89,6 @@ public class StockPanel extends JPanel {
                 bars.repaint();
             });
             buyButtons[i].setPreferredSize(new Dimension(80, 26));
-            //buyButtons[i].setEnabled(game.getMe().isAffordable(exercise));
 
             int col = 0;
             int row = i + 1;
@@ -101,8 +108,6 @@ public class StockPanel extends JPanel {
             manager.add(buyButtons[i], gbc);
             i++;
         }
-
-        setVisible(true);
     }
 
     public void updateContent() {
@@ -115,7 +120,7 @@ public class StockPanel extends JPanel {
             int share = game.getSharePercentage(exercise);
             exerciseLabels[i].setText(String.format("%s  >>>  Share: %d %% (%d / %d)", exercise, share, stockNumber, all));
             buyButtons[i].setEnabled(game.getMe().isStockAffordable(exercise));
-            buyButtons[i].setText(String.format("Buy (%d)", price));
+            buyButtons[i].setText(String.format("Buy ($%d)", price));
             i++;
         }
         bars.repaint();

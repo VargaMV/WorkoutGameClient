@@ -20,6 +20,9 @@ class WorkoutPanel extends JPanel {
         this.game = game;
         this.wsm = wsm;
         setLayout(new GridBagLayout());
+    }
+
+    void init() {
         GridBagConstraints gbc = new GridBagConstraints();
         int exerciseNumber = game.getExerciseValues().size();
         exerciseLabels = new JLabel[exerciseNumber];
@@ -92,7 +95,6 @@ class WorkoutPanel extends JPanel {
 
             i++;
         }
-
     }
 
     void updateContent() {
