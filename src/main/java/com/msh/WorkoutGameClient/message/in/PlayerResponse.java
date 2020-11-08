@@ -1,6 +1,5 @@
-package com.msh.WorkoutGameClient.message.response;
+package com.msh.WorkoutGameClient.message.in;
 
-import com.msh.WorkoutGameClient.message.response.SimpleResponse;
 import com.msh.WorkoutGameClient.model.Player;
 import lombok.Getter;
 

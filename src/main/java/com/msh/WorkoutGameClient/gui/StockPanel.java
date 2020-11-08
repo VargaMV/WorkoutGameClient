@@ -65,17 +65,16 @@ public class StockPanel extends JPanel {
         buyButtons = new JButton[exerciseTypeNumber];
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
 
         moneyLabel = new JLabel();
         moneyLabel.setText(String.format("Current money : %d", game.getMe().getMoney()));
         gbc.gridx = 0;
-        gbc.gridy = 10;
+        gbc.gridy = 0;
         gbc.gridwidth = 2;
         manager.add(moneyLabel);
 
         gbc.gridwidth = 1;
-
+        gbc.anchor = GridBagConstraints.WEST;
 
         int i = 0;
         for (var entry : game.getTotalStockNumbers().entrySet()) {
@@ -83,12 +82,9 @@ public class StockPanel extends JPanel {
             exerciseLabels[i] = new JLabel();
             buyButtons[i] = new JButton("Buy");
             buyButtons[i].addActionListener(e -> {
-                game.buyStock(exercise);
                 wsm.sendStockBought(exercise);
-                updateContent();
-                bars.repaint();
             });
-            buyButtons[i].setPreferredSize(new Dimension(80, 26));
+            buyButtons[i].setPreferredSize(new Dimension(100, 26));
 
             int col = 0;
             int row = i + 1;

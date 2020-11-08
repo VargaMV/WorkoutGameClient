@@ -1,6 +1,6 @@
 package com.msh.WorkoutGameClient.model;
 
-import com.msh.WorkoutGameClient.logic.PriceCalculator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +11,27 @@ import java.util.*;
 public class Game {
 
     private Field[][] map = new Field[1][1];
+    @JsonProperty("player")
     private Player me = new Player("DEFAULT", Color.BLUE);
     private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
     private Map<String, Integer> exerciseValues = new LinkedHashMap<>();
+    private int waitingTime;
+    private double priceIncExponent;
+
     private boolean retrievedDataFromServer = false;
 
     public Game() {
+
+    }
+
+    public void setServerGameState(Game game) {
+        map = game.getMap();
+        me = game.getMe();
+        totalStockNumbers = game.getTotalStockNumbers();
+        exerciseValues = game.getExerciseValues();
+        waitingTime = game.getWaitingTime();
+        priceIncExponent = game.getPriceIncExponent();
+        retrievedDataFromServer = true;
 
     }
 
@@ -75,7 +90,7 @@ public class Game {
         return (int) Math.floor(me.getStockNumbers().get(exercise) * 100 / (double) totalStockNumbers.get(exercise));
     }
 
-    public void buyStock(String exercise) {
+    /*public void buyStock(String exercise) {
         if (me.isStockAffordable(exercise)) {
             int prevValue = totalStockNumbers.get(exercise);
             totalStockNumbers.put(exercise, prevValue + 1);
@@ -85,10 +100,10 @@ public class Game {
             int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
             me.decMoney(price);
         }
-    }
+    }*/
 
     public void resetTimer() {
-        me.setSecondsUntilMove(120);
+        me.setSecondsUntilMove(waitingTime);
     }
 
     public void secondPast() {

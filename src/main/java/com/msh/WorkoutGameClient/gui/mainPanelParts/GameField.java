@@ -85,9 +85,9 @@ public class GameField extends JPanel {
                     Coordinate prevPos = game.getMe().getPosition();
                     Coordinate newPos = new Coordinate(finalI, finalJ);
                     game.getMe().setPosition(newPos);
-                    game.getMap()[prevPos.getX()][prevPos.getY()].removePlayerFromField(game.getMe());
-                    game.getMap()[newPos.getX()][newPos.getY()].addPlayerToField(game.getMe());
-                    drawMap();
+                    //game.getMap()[prevPos.getX()][prevPos.getY()].removePlayerFromField(game.getMe());
+                    //game.getMap()[newPos.getX()][newPos.getY()].addPlayerToField(game.getMe());
+                    //drawMap();
                     wsm.sendMove(prevPos, newPos);
                 });
                 add(button);

@@ -1,9 +1,10 @@
 package com.msh.WorkoutGameClient.websocket;
 
-import com.msh.WorkoutGameClient.websocket.MyStompSessionHandler;
+import com.msh.WorkoutGameClient.message.out.*;
 import com.msh.WorkoutGameClient.message.*;
 import com.msh.WorkoutGameClient.model.Coordinate;
 import com.msh.WorkoutGameClient.model.Game;
+import com.msh.WorkoutGameClient.model.LoginUser;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
@@ -23,6 +24,8 @@ public class WebSocketManager {
     private StompSession session;
     private JFrame gui;
 
+    private boolean connected = false;
+
     public WebSocketManager(Game game) {
         this.game = game;
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -34,11 +37,22 @@ public class WebSocketManager {
 
     public void establishConnection(String name, String URL) {
         StompSessionHandler sessionHandler = new MyStompSessionHandler(game, name, gui);
-        try {
-            session = stompClient.connect(URL, sessionHandler).get();
-        } catch (Exception ex) {
-            System.out.println(ex);
+        if (!connected) {
+            try {
+                session = stompClient.connect(URL, sessionHandler).get();
+                connected = true;
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
         }
+    }
+
+    public void register(String name, String password) {
+        session.send("/app/action/auth", new AuthMessage(MessageType.REGISTER, name, "I want to sign in!", new LoginUser(name, password)));
+    }
+
+    public void join(String name, String password) {
+        session.send("/app/action/auth", new AuthMessage(MessageType.JOIN, name, "I want to play!", new LoginUser(name, password)));
     }
 
     public void sendMove(Coordinate from, Coordinate to) {

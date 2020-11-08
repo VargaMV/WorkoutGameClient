@@ -1,5 +1,7 @@
-package com.msh.WorkoutGameClient.message;
+package com.msh.WorkoutGameClient.message.out;
 
+import com.msh.WorkoutGameClient.message.Message;
+import com.msh.WorkoutGameClient.message.MessageType;
 import com.msh.WorkoutGameClient.model.Coordinate;
 import lombok.Getter;
 import lombok.Setter;

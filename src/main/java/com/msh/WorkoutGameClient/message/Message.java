@@ -2,7 +2,6 @@ package com.msh.WorkoutGameClient.message;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 @Getter @Setter
 public class Message {
@@ -10,7 +9,7 @@ public class Message {
     String from;
     String text;
 
-    Message() {
+    public Message() {
 
     }
 
