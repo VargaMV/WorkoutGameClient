@@ -20,7 +20,6 @@ public class ClientRunner implements CommandLineRunner {
         game = new Game();
         webSocketManager = new WebSocketManager(game);
         mainFrame = new MainFrame(game, webSocketManager);
-
         webSocketManager.setGUI(mainFrame);
     }
 }

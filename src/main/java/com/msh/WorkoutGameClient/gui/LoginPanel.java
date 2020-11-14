@@ -83,7 +83,7 @@ public class LoginPanel extends JPanel {
         joinButton.addActionListener(e -> {
             String name = nameInput.getText();
             String password = new String(pswInput.getPassword());
-            String url = "ws://" + ipInput.getText() + ":" + portInput.getText() + "/action";
+            String url = "ws://" + ipInput.getText().trim() + ":" + portInput.getText().trim() + "/action";
             if (name.length() > 0) {
                 wsm.establishConnection(name, url);
                 wsm.join(name, password);

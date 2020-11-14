@@ -57,7 +57,7 @@ public class MainFrame extends JFrame {
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(WindowEvent winEvt) {
-                if (game.isRetrievedDataFromServer()) {
+                if (game.isRetrievedDataFromServer() && wsm.isSessionConnected()) {
                     wsm.sendSecondsUntilMove(game.getMe().getSecondsUntilMove());
                 }
                 System.exit(0);
@@ -88,6 +88,10 @@ public class MainFrame extends JFrame {
         ((StockPanel) stockPanel).updateContent();
     }
 
+    public void switchToLogin() {
+        cardLayout.show(containerPanel, "login");
+    }
+
     public void switchToMain() {
         cardLayout.show(containerPanel, "main");
         ((MainPanel) mainPanel).updateInformationPanel();
@@ -112,7 +116,7 @@ public class MainFrame extends JFrame {
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(e -> {
-            if (game.isRetrievedDataFromServer()) {
+            if (game.isRetrievedDataFromServer() && wsm.isSessionConnected()) {
                 wsm.sendSecondsUntilMove(game.getMe().getSecondsUntilMove());
             }
             System.exit(0);

@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui;
 
+import com.msh.WorkoutGameClient.exceptions.NegativeNumberException;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -46,11 +47,20 @@ class WorkoutPanel extends JPanel {
             saveButtons[i] = new JButton("Save");
             int finalI = i;
             saveButtons[i].addActionListener(e -> {
-                int reps = Integer.parseInt(inputFields[finalI].getText());
-                game.exerciseDone(exercise, reps);
-                inputFields[finalI].setText("");
-                updateContent();
-                wsm.sendExerciseDone(exercise, reps);
+                int reps = 0;
+                try {
+                    reps = Integer.parseInt(inputFields[finalI].getText());
+                    if (reps < 0) {
+                        throw new NegativeNumberException();
+                    }
+                    game.exerciseDone(exercise, reps);
+                    inputFields[finalI].setText("");
+                    updateContent();
+                    wsm.sendExerciseDone(exercise, reps);
+                } catch (NumberFormatException | NegativeNumberException ex) {
+                    inputFields[finalI].setText("");
+                    ;
+                }
             });
             inputFields[i] = new JTextField();
 

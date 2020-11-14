@@ -53,6 +53,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void handleTransportError(StompSession stompSession, Throwable throwable) {
         MainFrame mainFrame = (MainFrame) gui;
+        mainFrame.switchToLogin();
         ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback("Couldn't connect to server.");
         logger.error("Transport exception: ", throwable);
     }

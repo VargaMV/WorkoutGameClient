@@ -28,17 +28,17 @@ public class InformationBoard extends JPanel {
         add(fieldTitle);
 
         currentFieldValueLabel = new JLabel("");
-        currentFieldValueLabel.setBounds(20, 60, 200, 15);
+        currentFieldValueLabel.setBounds(20, 60, 250, 15);
         currentFieldValueLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         add(currentFieldValueLabel);
 
         ownerLabel = new JLabel("");
-        ownerLabel.setBounds(20, 85, 200, 15);
+        ownerLabel.setBounds(20, 85, 250, 15);
         ownerLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         add(ownerLabel);
 
         othersOnField = new JLabel("");
-        othersOnField.setBounds(20, 110, 200, 75);
+        othersOnField.setBounds(20, 110, 250, 75);
         othersOnField.setVerticalAlignment(SwingConstants.NORTH);
         othersOnField.setFont(new Font("Arial", Font.PLAIN, 16));
         add(othersOnField);

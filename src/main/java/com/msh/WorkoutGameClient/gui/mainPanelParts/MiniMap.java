@@ -25,6 +25,7 @@ public class MiniMap extends JPanel {
                 mapButton.setEnabled(false);
                 if (game.getMe().getColor() == game.getField(i, j).getColor()) {
                     mapButton.setBackground(game.getField(i, j).getAwtColor());
+                    mapButton.setToolTipText(String.valueOf(game.getField(i, j).getValue()));
                 }
                 if (game.getMe().getPosition().getX() == i && game.getMe().getPosition().getY() == j) {
                     mapButton.setEnabled(true);

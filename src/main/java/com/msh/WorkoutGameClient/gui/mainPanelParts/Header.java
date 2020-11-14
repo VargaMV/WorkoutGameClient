@@ -6,6 +6,9 @@ import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Header extends JPanel {
 
@@ -23,28 +26,18 @@ public class Header extends JPanel {
         setPreferredSize(new Dimension(500, 60));
 
         playerNameLabel = new JLabel("");
-        playerNameLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        playerNameLabel.setVerticalAlignment(SwingConstants.CENTER);
-        playerNameLabel.setPreferredSize(new Dimension(170, 50));
-        add(playerNameLabel);
-
         moneyLabel = new JLabel("");
-        moneyLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        moneyLabel.setVerticalAlignment(SwingConstants.CENTER);
-        moneyLabel.setPreferredSize(new Dimension(150, 50));
-        add(moneyLabel);
-
         scoreLabel = new JLabel("");
-        scoreLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        scoreLabel.setVerticalAlignment(SwingConstants.CENTER);
-        scoreLabel.setPreferredSize(new Dimension(150, 50));
-        add(scoreLabel);
-
         fieldsLabel = new JLabel("");
-        fieldsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        fieldsLabel.setVerticalAlignment(SwingConstants.CENTER);
-        fieldsLabel.setPreferredSize(new Dimension(150, 50));
-        add(fieldsLabel);
+
+        List<JLabel> labels = Arrays.asList(playerNameLabel, moneyLabel, scoreLabel, fieldsLabel);
+        for (var label : labels) {
+            label.setHorizontalAlignment(SwingConstants.LEFT);
+            label.setVerticalAlignment(SwingConstants.CENTER);
+            label.setPreferredSize(new Dimension(250, 50));
+            label.setFont(new Font("Arial", Font.PLAIN, 24));
+            add(label);
+        }
 
         setVisible(true);
     }
@@ -52,19 +45,15 @@ public class Header extends JPanel {
     public void updateHeader() {
         setBackground(game.getMe().getAwtColor());
         playerNameLabel.setText(game.getMe().getName());
-        playerNameLabel.setFont(new Font("Arial", Font.PLAIN, 24));
         playerNameLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
 
         scoreLabel.setText("score: " + game.getMe().getCurrentScore());
-        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         scoreLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
 
         moneyLabel.setText("money: $" + game.getMe().getMoney());
-        moneyLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         moneyLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
 
         fieldsLabel.setText("fields: " + game.getMe().getFieldsOwned());
-        fieldsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
         fieldsLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
     }
 }

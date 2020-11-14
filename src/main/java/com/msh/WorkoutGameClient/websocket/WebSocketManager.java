@@ -47,6 +47,10 @@ public class WebSocketManager {
         }
     }
 
+    public boolean isSessionConnected() {
+        return session.isConnected();
+    }
+
     public void register(String name, String password) {
         session.send("/app/action/auth", new AuthMessage(MessageType.REGISTER, name, "I want to sign in!", new LoginUser(name, password)));
     }
