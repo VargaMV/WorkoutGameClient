@@ -11,6 +11,8 @@ class WorkoutPanel extends JPanel {
 
     private final Game game;
     private WebSocketManager wsm;
+    private Header headerPanel;
+    private JPanel body;
     private JLabel[] exerciseLabels;
     private JLabel[] exerciseNumberLabels;
     private JLabel[] valueLabels;
@@ -20,7 +22,18 @@ class WorkoutPanel extends JPanel {
     WorkoutPanel(Game game, WebSocketManager wsm) {
         this.game = game;
         this.wsm = wsm;
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        headerPanel = new Header(game, wsm);
+
+        body = new JPanel();
+        body.setLayout(new GridBagLayout());
+
+        JScrollPane scrollableBody = new JScrollPane(body);
+        scrollableBody.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollableBody.getVerticalScrollBar().setUnitIncrement(20);
+
+        add(headerPanel, BorderLayout.NORTH);
+        add(scrollableBody, BorderLayout.CENTER);
     }
 
     void init() {
@@ -56,10 +69,10 @@ class WorkoutPanel extends JPanel {
                     game.exerciseDone(exercise, reps);
                     inputFields[finalI].setText("");
                     updateContent();
+                    updateHeaderPanel();
                     wsm.sendExerciseDone(exercise, reps);
                 } catch (NumberFormatException | NegativeNumberException ex) {
                     inputFields[finalI].setText("");
-                    ;
                 }
             });
             inputFields[i] = new JTextField();
@@ -73,35 +86,35 @@ class WorkoutPanel extends JPanel {
             gbc.ipadx = 10;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10 + (i % 2) * 30, 0, 0);
-            add(exerciseLabels[i], gbc);
+            body.add(exerciseLabels[i], gbc);
 
             gbc.gridx = col + 1;
             gbc.gridy = row;
             gbc.ipadx = 10;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
-            add(exerciseNumberLabels[i], gbc);
+            body.add(exerciseNumberLabels[i], gbc);
 
             gbc.gridx = col + 2;
             gbc.gridy = row;
             gbc.ipadx = 10;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
-            add(valueLabels[i], gbc);
+            body.add(valueLabels[i], gbc);
 
             gbc.gridx = col + 3;
             gbc.gridy = row;
             gbc.ipadx = 60;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
-            add(inputFields[i], gbc);
+            body.add(inputFields[i], gbc);
 
             gbc.gridx = col + 4;
             gbc.gridy = row;
             gbc.ipadx = 10;
             gbc.ipady = 10;
             gbc.insets = new Insets(10, 10, 0, 0);
-            add(saveButtons[i], gbc);
+            body.add(saveButtons[i], gbc);
 
             i++;
         }
@@ -127,5 +140,9 @@ class WorkoutPanel extends JPanel {
             }
             i++;
         }
+    }
+
+    public void updateHeaderPanel() {
+        headerPanel.updateHeader();
     }
 }

@@ -1,4 +1,4 @@
-package com.msh.WorkoutGameClient.gui.mainPanelParts;
+package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.logic.ColorConverter;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;

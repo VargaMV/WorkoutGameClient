@@ -40,17 +40,11 @@ public class MainFrame extends JFrame {
 
 
         containerPanel = new JPanel(cardLayout);
-        JScrollPane scrollableStock = new JScrollPane(stockPanel);
-        scrollableStock.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollableStock.getVerticalScrollBar().setUnitIncrement(20);
-        JScrollPane scrollableWorkout = new JScrollPane(workoutPanel);
-        scrollableWorkout.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollableWorkout.getVerticalScrollBar().setUnitIncrement(20);
 
         containerPanel.add(loginPanel, "login");
         containerPanel.add(mainPanel, "main");
-        containerPanel.add(scrollableStock, "stock");
-        containerPanel.add(scrollableWorkout, "workout");
+        containerPanel.add(stockPanel, "stock");
+        containerPanel.add(workoutPanel, "workout");
 
         add(containerPanel, BorderLayout.CENTER);
         setVisible(true);
@@ -71,6 +65,12 @@ public class MainFrame extends JFrame {
         ((MainPanel) mainPanel).initMap();
     }
 
+    public void updatePanels() {
+        updateMainPanel();
+        updateStockPanel();
+        updateWorkoutPanel();
+    }
+
     public void updateMainPanel() {
         ((MainPanel) mainPanel).updateInformationPanel();
         ((MainPanel) mainPanel).updateActionBoard();
@@ -81,6 +81,11 @@ public class MainFrame extends JFrame {
 
     public void updateStockPanel() {
         ((StockPanel) stockPanel).updateContent();
+        ((StockPanel) stockPanel).updateHeaderPanel();
+    }
+
+    public void updateWorkoutPanel() {
+        ((WorkoutPanel) workoutPanel).updateHeaderPanel();
     }
 
     public void switchToStocks() {

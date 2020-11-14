@@ -95,10 +95,9 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 Game game = gameMsg.getGame();
                 this.game.setServerGameState(game);
                 PriceCalculator.exponent = game.getPriceIncExponent();
-                ((MainFrame) gui).initPanels();
                 ((MainFrame) gui).createMenuBar();
-                ((MainFrame) gui).updateMainPanel();
-                ((MainFrame) gui).updateStockPanel();
+                ((MainFrame) gui).initPanels();
+                ((MainFrame) gui).updatePanels();
                 ((MainFrame) gui).switchToMain();
                 game.setRetrievedDataFromServer(true);
                 break;

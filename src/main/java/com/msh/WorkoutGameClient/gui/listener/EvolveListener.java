@@ -1,7 +1,7 @@
 package com.msh.WorkoutGameClient.gui.listener;
 
 import com.msh.WorkoutGameClient.gui.mainPanelParts.GameField;
-import com.msh.WorkoutGameClient.gui.mainPanelParts.Header;
+import com.msh.WorkoutGameClient.gui.Header;
 import com.msh.WorkoutGameClient.model.Game;
 
 import javax.swing.*;

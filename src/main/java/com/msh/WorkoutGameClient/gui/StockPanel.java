@@ -10,6 +10,8 @@ public class StockPanel extends JPanel {
 
     private Game game;
     private WebSocketManager wsm;
+    private Header headerPanel;
+    private JPanel body;
     private JPanel manager;
     private JLabel moneyLabel;
     private JLabel[] exerciseLabels;
@@ -33,11 +35,12 @@ public class StockPanel extends JPanel {
                 } else {
                     g2d.setColor(new Color(80, 80, 80));
                 }
+                int barWidth = this.getSize().width - 150;
+                g2d.fillRect(30, i * 60 + 30, barWidth, 20);
 
-                g2d.fillRect(30, i * 46 + 35, 300, 20);
-
-                g2d.setColor(new Color(120, 200, 50));
-                g2d.fillRect(30, i * 46 + 35, share * 3, 20);
+                //g2d.setColor(new Color(120, 200, 50));
+                g2d.setColor(game.getMe().getAwtColor());
+                g2d.fillRect(30, i * 60 + 30, share * barWidth / 100, 20);
                 i++;
             }
 
@@ -47,13 +50,25 @@ public class StockPanel extends JPanel {
     public StockPanel(Game game, WebSocketManager wsm) {
         this.game = game;
         this.wsm = wsm;
-        setLayout(new GridLayout());
+        setLayout(new BorderLayout());
+
+        headerPanel = new Header(game, wsm);
+        add(headerPanel, BorderLayout.NORTH);
+
+        body = new JPanel();
+        body.setLayout(new GridLayout());
+
+        JScrollPane scrollableBody = new JScrollPane(body);
+        scrollableBody.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollableBody.getVerticalScrollBar().setUnitIncrement(20);
+
+        add(scrollableBody, BorderLayout.CENTER);
 
         manager = new JPanel();
-        add(manager);
+        body.add(manager);
 
         bars = new BarsJPanel();
-        add(bars);
+        body.add(bars);
 
         manager.setLayout(new GridBagLayout());
         setVisible(true);
@@ -66,13 +81,6 @@ public class StockPanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        moneyLabel = new JLabel();
-        moneyLabel.setText(String.format("Current money : %d", game.getMe().getMoney()));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        manager.add(moneyLabel);
-
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -80,25 +88,24 @@ public class StockPanel extends JPanel {
         for (var entry : game.getTotalStockNumbers().entrySet()) {
             String exercise = entry.getKey();
             exerciseLabels[i] = new JLabel();
-            buyButtons[i] = new JButton("Buy");
+            exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 16));
+            buyButtons[i] = new JButton("");
             buyButtons[i].addActionListener(e -> {
                 wsm.sendStockBought(exercise);
             });
-            buyButtons[i].setPreferredSize(new Dimension(100, 26));
+            buyButtons[i].setPreferredSize(new Dimension(100, 30));
 
             int col = 0;
-            int row = i + 1;
+            int row = i;
 
             gbc.gridx = col;
             gbc.gridy = row;
-            gbc.ipadx = 10;
-            gbc.ipady = 10;
-            gbc.insets = new Insets(10, 10, 0, 0);
+            gbc.insets = new Insets(20, 20, 0, 0);
             manager.add(exerciseLabels[i], gbc);
 
             gbc.gridx = col + 1;
             gbc.gridy = row;
-            gbc.insets = new Insets(10, 10, 0, 0);
+            gbc.insets = new Insets(20, 20, 0, 0);
             gbc.ipadx = 10;
             gbc.ipady = 10;
             manager.add(buyButtons[i], gbc);
@@ -107,7 +114,6 @@ public class StockPanel extends JPanel {
     }
 
     public void updateContent() {
-        moneyLabel.setText(String.format("Current money : %d", game.getMe().getMoney()));
         int i = 0;
         for (var exercise : game.getTotalStockNumbers().keySet()) {
             int stockNumber = game.getMe().getStockNumbers().get(exercise);
@@ -120,5 +126,9 @@ public class StockPanel extends JPanel {
             i++;
         }
         bars.repaint();
+    }
+
+    public void updateHeaderPanel() {
+        headerPanel.updateHeader();
     }
 }

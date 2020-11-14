@@ -90,17 +90,10 @@ public class Game {
         return (int) Math.floor(me.getStockNumbers().get(exercise) * 100 / (double) totalStockNumbers.get(exercise));
     }
 
-    /*public void buyStock(String exercise) {
-        if (me.isStockAffordable(exercise)) {
-            int prevValue = totalStockNumbers.get(exercise);
-            totalStockNumbers.put(exercise, prevValue + 1);
-            int myPrevValue = me.getStockNumbers().get(exercise);
-            me.getStockNumbers().put(exercise, myPrevValue + 1);
-
-            int price = PriceCalculator.calculate(totalStockNumbers.get(exercise));
-            me.decMoney(price);
-        }
-    }*/
+    public void convertScoreToMoney(int score) {
+        me.decScore(score);
+        me.incMoney(score);
+    }
 
     public void resetTimer() {
         me.setSecondsUntilMove(waitingTime);

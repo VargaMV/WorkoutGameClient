@@ -49,25 +49,22 @@ public class ActionBoard extends JPanel {
         convertButton.setBounds(290, 10, 100, 30);
         convertButton.addActionListener(listeners.get("convert"));
         convertButton.addActionListener(e -> {
-            //TODO: convertScoreToMoney to game method!
-            int value = game.getMe().getCurrentScore();
+            int currentScore = game.getMe().getCurrentScore();
             try {
                 int amountConverted = Integer.parseInt(moneyInput.getText());
                 if (amountConverted < 0) {
                     throw new NegativeNumberException();
                 }
-                amountConverted = Math.min(value, amountConverted);
+                amountConverted = Math.min(currentScore, amountConverted);
                 wsm.sendConvert(amountConverted);
-                game.getMe().decScore(amountConverted);
-                game.getMe().incMoney(amountConverted);
+                game.convertScoreToMoney(amountConverted);
                 moneyInput.setText("");
                 messageLabel.setText("");
                 updateButtons();
             } catch (NumberFormatException | NegativeNumberException ex) {
                 if ("".equals(moneyInput.getText())) {
-                    wsm.sendConvert(game.getMe().getCurrentScore());
-                    game.getMe().incMoney(game.getMe().getCurrentScore());
-                    game.getMe().setCurrentScore(0);
+                    wsm.sendConvert(currentScore);
+                    game.convertScoreToMoney(currentScore);
                     updateButtons();
                 } else {
                     messageLabel.setText("Natural number needed!");
