@@ -16,10 +16,12 @@ public class ClientRunner implements CommandLineRunner {
     private WebSocketManager webSocketManager;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         game = new Game();
         webSocketManager = new WebSocketManager(game);
         mainFrame = new MainFrame(game, webSocketManager);
         webSocketManager.setGUI(mainFrame);
+        webSocketManager.establishConnection();
+        webSocketManager.getGames();
     }
 }

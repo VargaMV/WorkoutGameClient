@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.exceptions.NegativeNumberException;
+import com.msh.WorkoutGameClient.model.Exercise;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -60,9 +61,9 @@ class WorkoutPanel extends JPanel {
             saveButtons[i] = new JButton("Save");
             int finalI = i;
             saveButtons[i].addActionListener(e -> {
-                int reps = 0;
+                double reps;
                 try {
-                    reps = Integer.parseInt(inputFields[finalI].getText());
+                    reps = Double.parseDouble(inputFields[finalI].getText());
                     if (reps < 0) {
                         throw new NegativeNumberException();
                     }
@@ -123,16 +124,18 @@ class WorkoutPanel extends JPanel {
     void updateContent() {
         int i = 0;
         for (var entry : game.getExerciseValues().entrySet()) {
-            String exercise = entry.getKey();
-            Integer value = entry.getValue();
-            int records = game.getMe().getExerciseNumbers().get(exercise);
-            int ownStock = game.getMe().getStockNumbers().get(exercise);
-            int allStock = game.getTotalStockNumber(exercise);
-            int share = game.getSharePercentage(exercise);
+            String exerciseName = entry.getKey();
+            Exercise exercise = entry.getValue();
+            int value = exercise.getValue();
+            int records = game.getMe().getExerciseNumbers().get(exerciseName);
+            int ownStock = game.getMe().getStockNumbers().get(exerciseName);
+            int allStock = game.getTotalStockNumber(exerciseName);
+            int share = game.getSharePercentage(exerciseName);
             int myValue = (int) Math.ceil(value * ownStock / (double) allStock);
-            exerciseLabels[i].setText(String.format("%s [%d%%]", exercise.toUpperCase(), share));
+            exerciseLabels[i].setText(String.format("%s [%d%%]", exerciseName.toUpperCase(), share));
             exerciseNumberLabels[i].setText(String.valueOf(records));
-            valueLabels[i].setText(String.format("%d / rep", myValue));
+            valueLabels[i].setText(String.format("%d / %s", myValue, exercise.getType()));
+            valueLabels[i].setToolTipText("Full: " + value);
             if (myValue == 0) {
                 valueLabels[i].setForeground(Color.RED);
             } else {

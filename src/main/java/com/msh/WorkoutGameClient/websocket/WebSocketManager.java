@@ -22,7 +22,11 @@ public class WebSocketManager {
     private WebSocketClient client;
     private WebSocketStompClient stompClient;
     private StompSession session;
+    private StompSessionHandler sessionHandler;
     private JFrame gui;
+    //private final String URL = "ws://34.65.59.146:8080/action";
+    private final String URL = "ws://localhost:8080/action";
+    //private final String URL = "ws://192.168.0.101:8080/action";
 
     private boolean connected = false;
 
@@ -35,8 +39,8 @@ public class WebSocketManager {
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
     }
 
-    public void establishConnection(String name, String URL) {
-        StompSessionHandler sessionHandler = new MyStompSessionHandler(game, name, gui);
+    public void establishConnection() {
+        sessionHandler = new MyStompSessionHandler(game, gui);
         if (!connected) {
             try {
                 session = stompClient.connect(URL, sessionHandler).get();
@@ -51,12 +55,24 @@ public class WebSocketManager {
         return session.isConnected();
     }
 
+    public void getGames() {
+        session.send("/app/action/games", new Message(MessageType.GAMES, session.getSessionId(), "Get active games."));
+    }
+
     public void register(String name, String password) {
+        session.subscribe("/private/connection/" + name, sessionHandler);
         session.send("/app/action/auth", new AuthMessage(MessageType.REGISTER, name, "I want to sign in!", new LoginUser(name, password)));
     }
 
-    public void join(String name, String password) {
-        session.send("/app/action/auth", new AuthMessage(MessageType.JOIN, name, "I want to play!", new LoginUser(name, password)));
+    public void join(String name, String password, String gameId) {
+        session.subscribe("/private/connection/" + name, sessionHandler);
+        session.subscribe("/public/map/" + gameId, sessionHandler);
+        session.subscribe("/public/stock/" + gameId, sessionHandler);
+        session.subscribe("/private/" + name + "/connection/" + gameId, sessionHandler);
+        session.subscribe("/private/" + name + "/game/" + gameId, sessionHandler);
+        session.subscribe("/private/" + name + "/player/" + gameId, sessionHandler);
+
+        session.send("/app/action/auth", new AuthMessage(MessageType.JOIN, name, gameId, new LoginUser(name, password)));
     }
 
     public void sendMove(Coordinate from, Coordinate to) {
@@ -67,12 +83,11 @@ public class WebSocketManager {
         session.send("/app/action/occupy", new OccupationMessage(game.getMe().getName(), "I have a new field!", field));
     }
 
-    //TODO: StockMessage
     public void sendStockBought(String exercise) {
         session.send("/app/action/stock", new Message(MessageType.STOCK, game.getMe().getName(), exercise));
     }
 
-    public void sendExerciseDone(String exercise, int amount) {
+    public void sendExerciseDone(String exercise, double amount) {
         session.send("/app/action/exercise", new ExerciseMessage(game.getMe().getName(), "I workout!", exercise, amount));
     }
 

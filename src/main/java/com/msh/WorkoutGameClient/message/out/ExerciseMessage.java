@@ -10,12 +10,12 @@ import lombok.Setter;
 public class ExerciseMessage extends Message {
 
     private String exercise;
-    private int amount;
+    private double amount;
 
     public ExerciseMessage() {
     }
 
-    public ExerciseMessage(String from, String text, String exercise, int amount) {
+    public ExerciseMessage(String from, String text, String exercise, double amount) {
         super(MessageType.EXERCISE, from, text);
         this.exercise = exercise;
         this.amount = amount;

@@ -88,11 +88,9 @@ public class StockPanel extends JPanel {
         for (var entry : game.getTotalStockNumbers().entrySet()) {
             String exercise = entry.getKey();
             exerciseLabels[i] = new JLabel();
-            exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 16));
+            exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
             buyButtons[i] = new JButton("");
-            buyButtons[i].addActionListener(e -> {
-                wsm.sendStockBought(exercise);
-            });
+            buyButtons[i].addActionListener(e -> wsm.sendStockBought(exercise));
             buyButtons[i].setPreferredSize(new Dimension(100, 30));
 
             int col = 0;

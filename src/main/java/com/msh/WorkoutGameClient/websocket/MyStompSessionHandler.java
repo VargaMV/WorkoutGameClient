@@ -8,6 +8,7 @@ import com.msh.WorkoutGameClient.message.in.*;
 import com.msh.WorkoutGameClient.model.Field;
 import com.msh.WorkoutGameClient.model.Game;
 import com.msh.WorkoutGameClient.model.Player;
+import com.msh.WorkoutGameClient.model.SimpleGame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.stomp.*;
@@ -23,26 +24,18 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     private Game game;
     private final Logger logger = LogManager.getLogger(MyStompSessionHandler.class);
-    private final String name;
     private JFrame gui;
 
-    public MyStompSessionHandler(Game game, String name, JFrame gui) {
+    public MyStompSessionHandler(Game game, JFrame gui) {
         this.game = game;
-        this.name = name;
         this.gui = gui;
     }
 
     @Override
     public void afterConnected(StompSession stompSession, StompHeaders stompHeaders) {
         stompSession.subscribe("/public", this);
-        stompSession.subscribe("/public/map", this);
-        stompSession.subscribe("/public/stock", this);
-
-        stompSession.subscribe("/private/game/" + name, this);
-        stompSession.subscribe("/private/map/" + name, this);
-        stompSession.subscribe("/private/player/" + name, this);
-        stompSession.subscribe("/private/exercise/" + name, this);
-        stompSession.subscribe("/private/connection/" + name, this);
+        stompSession.subscribe("/private/games/" + stompSession.getSessionId(), this);
+        stompSession.subscribe("/public/games", this);
     }
 
     @Override
@@ -62,19 +55,27 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public Type getPayloadType(StompHeaders stompHeaders) {
         String[] destination = Objects.requireNonNull(stompHeaders.getDestination()).split("/");
         if (destination.length > 2) {
-            switch (destination[2]) {
-                case "game":
-                    return GameResponse.class;
-                case "map":
-                    return MapResponse.class;
-                case "player":
-                    return PlayerResponse.class;
-                case "exercise":
-                    return ExerciseInfoResponse.class;
-                case "stock":
-                    return StockResponse.class;
-                default:
-                    return SimpleResponse.class;
+            if (destination[2].equals("games")) {
+                return GamesResponse.class;
+            }
+            if (destination[1].equals("public")) {
+                switch (destination[2]) {
+                    case "map":
+                        return MapResponse.class;
+                    case "stock":
+                        return StockResponse.class;
+                    default:
+                        return SimpleResponse.class;
+                }
+            } else if (destination[1].equals("private")) {
+                switch (destination[3]) {
+                    case "game":
+                        return GameResponse.class;
+                    case "player":
+                        return PlayerResponse.class;
+                    default:
+                        return SimpleResponse.class;
+                }
             }
         }
         return SimpleResponse.class;
@@ -90,16 +91,25 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         }
 
         switch (msg.getResponse()) {
+            case "GAMES":
+                GamesResponse gamesMsg = (GamesResponse) payload;
+                List<SimpleGame> games = gamesMsg.getGames();
+                games.forEach(System.out::println);
+                ((MainFrame) gui).updateLoginPanel(games);
+                break;
             case "GAME":
-                GameResponse gameMsg = (GameResponse) payload;
-                Game game = gameMsg.getGame();
-                this.game.setServerGameState(game);
-                PriceCalculator.exponent = game.getPriceIncExponent();
-                ((MainFrame) gui).createMenuBar();
-                ((MainFrame) gui).initPanels();
-                ((MainFrame) gui).updatePanels();
-                ((MainFrame) gui).switchToMain();
-                game.setRetrievedDataFromServer(true);
+                //TODO: if needed? if yes, why?
+                if (!game.isRetrievedDataFromServer()) {
+                    GameResponse gameMsg = (GameResponse) payload;
+                    Game game = gameMsg.getGame();
+                    this.game.setServerGameState(game);
+                    PriceCalculator.exponent = game.getPriceIncExponent();
+                    ((MainFrame) gui).createMenuBar();
+                    ((MainFrame) gui).initPanels();
+                    ((MainFrame) gui).updatePanels();
+                    ((MainFrame) gui).switchToMain();
+                    game.setRetrievedDataFromServer(true);
+                }
                 break;
             case "PLAYER":
                 PlayerResponse playerMsg = (PlayerResponse) payload;
@@ -108,26 +118,25 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 ((MainFrame) gui).updateMainPanel();
                 break;
             case "MAP":
-                MapResponse mapMsg = (MapResponse) payload;
-                Field[][] map = mapMsg.getMap();
-                this.game.setMap(map);
-                ((MainFrame) gui).updateMainPanel();
+                //only use the current game updates
+                if (game.getId().equals(msg.getText())) {
+                    MapResponse mapMsg = (MapResponse) payload;
+                    Field[][] map = mapMsg.getMap();
+                    this.game.setMap(map);
+                    ((MainFrame) gui).updateMainPanel();
+                }
                 break;
             case "STOCK":
-                StockResponse stockMsg = (StockResponse) payload;
-                Map<String, Integer> totalStocks = stockMsg.getAll();
-                this.game.setTotalStockNumbers(totalStocks);
-                if (msg.getFrom().equals(this.game.getMe().getName())) {
-                    this.game.getMe().setStockNumbers(stockMsg.getOwn());
-                    this.game.getMe().setMoney(stockMsg.getOwnMoney());
+                if (game.getId().equals(msg.getText())) {
+                    StockResponse stockMsg = (StockResponse) payload;
+                    Map<String, Integer> totalStocks = stockMsg.getAll();
+                    this.game.setTotalStockNumbers(totalStocks);
+                    if (msg.getFrom().equals(this.game.getMe().getName())) {
+                        this.game.getMe().setStockNumbers(stockMsg.getOwn());
+                        this.game.getMe().setMoney(stockMsg.getOwnMoney());
+                    }
+                    ((MainFrame) gui).updateStockPanel();
                 }
-                ((MainFrame) gui).updateStockPanel();
-                break;
-
-            case "EXERCISE":
-                ExerciseInfoResponse exerciseMsg = (ExerciseInfoResponse) payload;
-                Map<String, Integer> exerciseValues = exerciseMsg.getInformation();
-                this.game.setExerciseValues(exerciseValues);
                 break;
         }
     }

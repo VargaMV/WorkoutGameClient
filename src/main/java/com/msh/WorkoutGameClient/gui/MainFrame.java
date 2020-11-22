@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui;
 
+import com.msh.WorkoutGameClient.model.SimpleGame;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 import lombok.Getter;
@@ -7,7 +8,9 @@ import lombok.Getter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 @Getter
 public class MainFrame extends JFrame {
@@ -18,6 +21,7 @@ public class MainFrame extends JFrame {
     private final JPanel mainPanel;
     private final JPanel stockPanel;
     private final JPanel workoutPanel;
+    private final JPanel rulesPanel;
     private final CardLayout cardLayout;
     private WebSocketManager wsm;
 
@@ -37,6 +41,7 @@ public class MainFrame extends JFrame {
         this.wsm = wsm;
         this.stockPanel = new StockPanel(game, wsm);
         this.workoutPanel = new WorkoutPanel(game, wsm);
+        this.rulesPanel = new RulesPanel();
 
 
         containerPanel = new JPanel(cardLayout);
@@ -45,6 +50,7 @@ public class MainFrame extends JFrame {
         containerPanel.add(mainPanel, "main");
         containerPanel.add(stockPanel, "stock");
         containerPanel.add(workoutPanel, "workout");
+        containerPanel.add(rulesPanel, "rules");
 
         add(containerPanel, BorderLayout.CENTER);
         setVisible(true);
@@ -63,6 +69,10 @@ public class MainFrame extends JFrame {
         ((WorkoutPanel) workoutPanel).init();
         ((StockPanel) stockPanel).init();
         ((MainPanel) mainPanel).initMap();
+    }
+
+    public void updateLoginPanel(List<SimpleGame> games) {
+        ((LoginPanel) loginPanel).updateGamesPanel(games);
     }
 
     public void updatePanels() {
@@ -91,10 +101,15 @@ public class MainFrame extends JFrame {
     public void switchToStocks() {
         cardLayout.show(containerPanel, "stock");
         ((StockPanel) stockPanel).updateContent();
+        ((StockPanel) stockPanel).updateHeaderPanel();
     }
 
     public void switchToLogin() {
         cardLayout.show(containerPanel, "login");
+    }
+
+    public void switchToRules() {
+        cardLayout.show(containerPanel, "rules");
     }
 
     public void switchToMain() {
@@ -109,6 +124,7 @@ public class MainFrame extends JFrame {
     public void switchToWorkout() {
         cardLayout.show(containerPanel, "workout");
         ((WorkoutPanel) workoutPanel).updateContent();
+        ((WorkoutPanel) workoutPanel).updateHeaderPanel();
     }
 
     public void createMenuBar() {
@@ -118,6 +134,10 @@ public class MainFrame extends JFrame {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
         menuBar.add(fileMenu);
+
+        JMenuItem rulesPanelItem = new JMenuItem("Rules");
+        rulesPanelItem.addActionListener(e -> switchToRules());
+        fileMenu.add(rulesPanelItem);
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(e -> {

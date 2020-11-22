@@ -10,11 +10,12 @@ import java.util.*;
 @Setter
 public class Game {
 
+    private String id;
     private Field[][] map = new Field[1][1];
     @JsonProperty("player")
     private Player me = new Player("DEFAULT", Color.BLUE);
     private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
-    private Map<String, Integer> exerciseValues = new LinkedHashMap<>();
+    private Map<String, Exercise> exerciseValues = new LinkedHashMap<>();
     private int waitingTime;
     private double priceIncExponent;
 
@@ -25,6 +26,7 @@ public class Game {
     }
 
     public void setServerGameState(Game game) {
+        id = game.getId();
         map = game.getMap();
         me = game.getMe();
         totalStockNumbers = game.getTotalStockNumbers();
@@ -41,6 +43,10 @@ public class Game {
 
     public Field getField(Coordinate coordinate) {
         return map[coordinate.getX()][coordinate.getY()];
+    }
+
+    public boolean isCurrentFieldMine() {
+        return getField(me.getPosition()).getOwner().getName().equals(me.getName());
     }
 
     public boolean amIWorthy() {
@@ -81,9 +87,10 @@ public class Game {
         return totalStockNumbers.get(exercise);
     }
 
-    public void exerciseDone(String exercise, int amount) {
-        me.incExerciseValue(exercise, amount);
-        me.incScore((int) Math.ceil(exerciseValues.get(exercise) * getSharePercentage(exercise) / 100.0) * amount);
+    public void exerciseDone(String exercise, double amount) {
+        int roundedAmount = (int) Math.round(amount - 0.25);
+        me.incExerciseValue(exercise, roundedAmount);
+        me.incScore((int) Math.ceil(exerciseValues.get(exercise).getValue() * getSharePercentage(exercise) / 100.0) * roundedAmount);
     }
 
     public int getSharePercentage(String exercise) {

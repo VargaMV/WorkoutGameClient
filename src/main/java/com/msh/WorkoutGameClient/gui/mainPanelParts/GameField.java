@@ -112,7 +112,7 @@ public class GameField extends JPanel {
                         button.setBorderPainted(true);
                         button.setBorder(BorderFactory.createLineBorder(fields[i][j].getPlayersOnField().get(0).getAwtColor(), 3));
                     }
-                    if (game.getMe().getCurrentScore() > 0 || game.getMe().getSecondsUntilMove() > 0) {
+                    if (game.getMe().getCurrentScore() > 0 && !game.isCurrentFieldMine() || game.getMe().getSecondsUntilMove() > 0) {
                         button.setEnabled(false);
                     } else {
                         button.setBackground(fields[i][j].getAwtColor());

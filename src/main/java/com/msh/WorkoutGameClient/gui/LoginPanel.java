@@ -1,5 +1,6 @@
 package com.msh.WorkoutGameClient.gui;
 
+import com.msh.WorkoutGameClient.model.SimpleGame;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 
 import javax.swing.*;
@@ -7,91 +8,116 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class LoginPanel extends JPanel {
 
+    private JLabel nameLabel;
+    private JLabel passwordLabel;
     private JTextField nameInput;
     private JPasswordField pswInput;
-    private JTextField ipInput;
-    private JTextField portInput;
+    private JButton joinButton;
     private JLabel feedBackLabel;
     private WebSocketManager wsm;
+    private JPanel gamesPanel;
+
+    private String gameId = null;
+    private boolean running;
 
     public LoginPanel(WebSocketManager wsm) {
         this.wsm = wsm;
 
-        //setSize(800, 650);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 0, 10, 0);
         gbc.fill = 1;
+
+        JLabel select = new JLabel("Select a game:");
+        select.setPreferredSize(new Dimension(200, 40));
+        select.setHorizontalAlignment(SwingConstants.CENTER);
+        select.setFont(new Font("Arial", Font.BOLD, 24));
         gbc.gridx = 1;
+        gbc.gridy = 6;
         gbc.gridwidth = 2;
-        gbc.insets = new Insets(10, 0, 0, 0);
+        add(select, gbc);
+
+        gamesPanel = new JPanel();
+        gamesPanel.setLayout(new GridBagLayout());
+
+        gbc.insets = new Insets(10, 0, 20, 0);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        gamesPanel.setPreferredSize(new Dimension(450, 250));
+        add(gamesPanel, gbc);
 
         JLabel title = new JLabel("LOGIN");
-        title.setPreferredSize(new Dimension(200, 30));
+        title.setPreferredSize(new Dimension(200, 50));
         title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 28));
-        title.setBackground(Color.RED);
-        gbc.gridy = 2;
+        title.setFont(new Font("Arial", Font.BOLD, 42));
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
         add(title, gbc);
 
+        gbc.insets = new Insets(10, 0, 0, 0);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        nameLabel = new JLabel("Name: ");
+        nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        add(nameLabel, gbc);
 
         nameInput = new JTextField("Name");
         nameInput.setPreferredSize(new Dimension(200, 30));
-        gbc.gridy = 3;
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
         add(nameInput, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        passwordLabel = new JLabel("Password: ");
+        passwordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        add(passwordLabel, gbc);
 
         pswInput = new JPasswordField("");
         pswInput.setPreferredSize(new Dimension(200, 30));
-        gbc.gridy = 4;
+        gbc.gridx = 2;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
         add(pswInput, gbc);
-
-        ipInput = new JTextField("IP");
-        ipInput.setPreferredSize(new Dimension(200, 30));
-        gbc.gridy = 5;
-        add(ipInput, gbc);
-
-        portInput = new JTextField("Port");
-        portInput.setPreferredSize(new Dimension(200, 30));
-        gbc.gridy = 6;
-        add(portInput, gbc);
 
         feedBackLabel = new JLabel("");
         feedBackLabel.setPreferredSize(new Dimension(400, 30));
         feedBackLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 8;
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
         add(feedBackLabel, gbc);
 
-        File file = new File("serverAddress.txt");
+        File file = new File("username.txt");
         try (Scanner scanner = new Scanner(file)) {
             if (scanner.hasNextLine()) {
-                String[] line = scanner.nextLine().split("#");
-                if (line.length == 3) {
-                    nameInput.setText(line[0]);
-                    ipInput.setText(line[1]);
-                    portInput.setText(line[2]);
-                }
+                String name = scanner.nextLine();
+                nameInput.setText(name);
             }
         } catch (Exception ex) {
             System.out.println(ex);
         }
-
-        JButton joinButton = new JButton("Join");
+        joinButton = new JButton("-");
+        joinButton.setEnabled(false);
         joinButton.setPreferredSize(new Dimension(100, 30));
         joinButton.addActionListener(e -> {
             String name = nameInput.getText();
             String password = new String(pswInput.getPassword());
-            String url = "ws://" + ipInput.getText().trim() + ":" + portInput.getText().trim() + "/action";
             if (name.length() > 0) {
-                wsm.establishConnection(name, url);
-                wsm.join(name, password);
+                wsm.join(name, password, gameId);
                 try {
                     FileWriter writer = new FileWriter(file);
-                    writer.write(nameInput.getText() + "#");
-                    writer.append(ipInput.getText()).append("#");
-                    writer.append(portInput.getText());
+                    writer.write(nameInput.getText());
                     writer.close();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -100,8 +126,9 @@ public class LoginPanel extends JPanel {
             }
 
         });
+        gbc.gridx = 2;
+        gbc.gridy = 4;
         gbc.gridwidth = 1;
-        gbc.gridy = 7;
         add(joinButton, gbc);
 
         JButton registerButton = new JButton("Register");
@@ -109,16 +136,14 @@ public class LoginPanel extends JPanel {
         registerButton.addActionListener(e -> {
             String name = nameInput.getText();
             String password = new String(pswInput.getPassword());
-            String url = "ws://" + ipInput.getText() + ":" + portInput.getText() + "/action";
             if (name.length() > 0) {
-                wsm.establishConnection(name, url);
                 wsm.register(name, password);
             }
 
         });
-        gbc.gridx = 2;
+        gbc.gridx = 1;
+        gbc.gridy = 4;
         gbc.gridwidth = 1;
-        gbc.gridy = 7;
         add(registerButton, gbc);
 
         setVisible(true);
@@ -126,5 +151,47 @@ public class LoginPanel extends JPanel {
 
     public void writeFeedback(String feedback) {
         feedBackLabel.setText(feedback);
+    }
+
+    public void updateContent() {
+        joinButton.setEnabled(true);
+        joinButton.setText(running ? "Join" : "Subscribe");
+    }
+
+    public void updateGamesPanel(List<SimpleGame> games) {
+        GridBagConstraints gpGbc = new GridBagConstraints();
+        int i = 0;
+        gamesPanel.removeAll();
+        for (var game : games) {
+            JButton gameButton = new JButton();
+            gameButton.setText(
+                    String.format(
+                            "Name: %s, Running: %b, Sub: %b, player number: %d",
+                            game.getTitle(), game.isRunning(), game.isSubOn(), game.getPlayerNumber()
+                    )
+            );
+            gameButton.addActionListener(e -> {
+                gameId = game.getId();
+                running = game.isRunning();
+                updateGamesPanel(games);
+                updateContent();
+            });
+            gameButton.setFocusPainted(false);
+            gameButton.setBorderPainted(false);
+            if (game.getId().equals(gameId)) {
+                gameButton.setBackground(Color.GREEN);
+            } else {
+                gameButton.setBackground(Color.GRAY);
+            }
+            gameButton.setPreferredSize(new Dimension(450, 40));
+            gameButton.setHorizontalAlignment(SwingConstants.CENTER);
+            gpGbc.insets = new Insets(5, 0, 5, 0);
+            gpGbc.gridx = 1;
+            gpGbc.gridy = i;
+            gamesPanel.add(gameButton, gpGbc);
+            i++;
+        }
+        gamesPanel.repaint();
+        gamesPanel.revalidate();
     }
 }
