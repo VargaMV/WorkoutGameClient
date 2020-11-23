@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.tomcat.util.codec.binary.Base64;
+
 public class LoginPanel extends JPanel {
 
     private JLabel nameLabel;
@@ -104,6 +106,10 @@ public class LoginPanel extends JPanel {
                 String name = scanner.nextLine();
                 nameInput.setText(name);
             }
+            if (scanner.hasNextLine()) {
+                String psw = new String(Base64.decodeBase64(scanner.nextLine()));
+                pswInput.setText(psw);
+            }
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -118,6 +124,8 @@ public class LoginPanel extends JPanel {
                 try {
                     FileWriter writer = new FileWriter(file);
                     writer.write(nameInput.getText());
+                    writer.write("\n");
+                    writer.write(Base64.encodeBase64String(password.getBytes()));
                     writer.close();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
