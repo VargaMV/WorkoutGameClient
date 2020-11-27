@@ -26,7 +26,7 @@ public class WebSocketManager {
     private JFrame gui;
     //private final String URL = "ws://34.65.59.146:8080/action";
     private final String URL = "ws://localhost:8080/action";
-    //private final String URL = "ws://192.168.0.101:8080/action";
+    //private final String URL = "ws://192.168.0.103:8080/action";
 
     private boolean connected = false;
 
@@ -60,14 +60,14 @@ public class WebSocketManager {
     }
 
     public void register(String name, String password) {
-        session.subscribe("/private/connection/" + name, sessionHandler);
+        session.subscribe("/private/" + name + "/connection", sessionHandler);
         session.send("/app/action/auth", new AuthMessage(MessageType.REGISTER, name, "I want to sign in!", new LoginUser(name, password)));
     }
 
     public void join(String name, String password, String gameId) {
-        session.subscribe("/private/connection/" + name, sessionHandler);
         session.subscribe("/public/map/" + gameId, sessionHandler);
         session.subscribe("/public/stock/" + gameId, sessionHandler);
+        session.subscribe("/private/" + name + "/connection", sessionHandler);
         session.subscribe("/private/" + name + "/connection/" + gameId, sessionHandler);
         session.subscribe("/private/" + name + "/game/" + gameId, sessionHandler);
         session.subscribe("/private/" + name + "/player/" + gameId, sessionHandler);

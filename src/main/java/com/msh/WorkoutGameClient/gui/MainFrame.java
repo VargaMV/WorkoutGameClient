@@ -65,6 +65,10 @@ public class MainFrame extends JFrame {
         });
     }
 
+    public void exit() {
+        System.exit(0);
+    }
+
     public void initPanels() {
         ((WorkoutPanel) workoutPanel).init();
         ((StockPanel) stockPanel).init();

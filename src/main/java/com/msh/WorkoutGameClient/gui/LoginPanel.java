@@ -71,7 +71,7 @@ public class LoginPanel extends JPanel {
         nameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         add(nameLabel, gbc);
 
-        nameInput = new JTextField("Name");
+        nameInput = new JTextField("");
         nameInput.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 2;
         gbc.gridy = 2;
@@ -100,7 +100,7 @@ public class LoginPanel extends JPanel {
         gbc.gridwidth = 2;
         add(feedBackLabel, gbc);
 
-        File file = new File("username.txt");
+        File file = new File("auth.txt");
         try (Scanner scanner = new Scanner(file)) {
             if (scanner.hasNextLine()) {
                 String name = scanner.nextLine();

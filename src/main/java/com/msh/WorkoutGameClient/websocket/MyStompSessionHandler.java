@@ -36,6 +36,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
         stompSession.subscribe("/public", this);
         stompSession.subscribe("/private/games/" + stompSession.getSessionId(), this);
         stompSession.subscribe("/public/games", this);
+        stompSession.subscribe("/public/stop", this);
     }
 
     @Override
@@ -85,12 +86,15 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders stompHeaders, Object payload) {
         SimpleResponse msg = (SimpleResponse) payload;
         MainFrame mainFrame = (MainFrame) gui;
-        List<String> connectionResponses = Arrays.asList("USED", "SUB", "OFF", "INVALID", "SUCCESS");
+        List<String> connectionResponses = Arrays.asList("USED", "SUB", "OFF", "INVALID", "SUCCESS", "STOP");
         if (connectionResponses.contains(msg.getResponse())) {
             ((LoginPanel) mainFrame.getLoginPanel()).writeFeedback(msg.getText());
         }
 
         switch (msg.getResponse()) {
+            case "STOP":
+                ((MainFrame) gui).exit();
+                break;
             case "GAMES":
                 GamesResponse gamesMsg = (GamesResponse) payload;
                 List<SimpleGame> games = gamesMsg.getGames();
