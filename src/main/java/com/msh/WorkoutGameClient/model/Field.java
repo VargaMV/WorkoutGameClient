@@ -23,14 +23,6 @@ public class Field implements Serializable {
         playersOnField = new ArrayList<>();
     }
 
-    /*public void addPlayerToField(Player player) {
-        playersOnField.add(new SimplePlayer(player));
-    }
-
-    public void removePlayerFromField(Player player) {
-        playersOnField = playersOnField.stream().filter(p -> !p.getName().equals(player.getName())).collect(Collectors.toList());
-    }*/
-
     public Color getColor() {
         return owner.getColor();
     }

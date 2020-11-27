@@ -80,7 +80,11 @@ public class GameField extends JPanel {
                 int finalI = i;
                 button.addActionListener(listener);
                 button.addActionListener(e -> {
-                    game.resetTimer();
+                    if (!game.isFieldMine(finalI, finalJ)) {
+                        game.resetTimer();
+                    } else {
+                        game.resetTimer(1);
+                    }
                     timer.start();
                     Coordinate prevPos = game.getMe().getPosition();
                     Coordinate newPos = new Coordinate(finalI, finalJ);

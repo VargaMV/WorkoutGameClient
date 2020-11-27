@@ -102,8 +102,16 @@ public class Game {
         me.incMoney(score);
     }
 
+    public boolean isFieldMine(int i, int j) {
+        return map[i][j].getOwner().getName().equals(me.getName());
+    }
+
     public void resetTimer() {
         me.setSecondsUntilMove(waitingTime);
+    }
+
+    public void resetTimer(int seconds) {
+        me.setSecondsUntilMove(seconds);
     }
 
     public void secondPast() {
