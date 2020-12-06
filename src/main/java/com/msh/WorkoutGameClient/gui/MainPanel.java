@@ -41,7 +41,7 @@ public class MainPanel extends JPanel {
         rightSideContainer.setLayout(new FlowLayout());
         rightSideContainer.setPreferredSize(new Dimension(300, 650));
 
-        headerPanel = new Header(game, wsm);
+        headerPanel = new Header(game, wsm, "main");
         add(headerPanel, BorderLayout.NORTH);
 
         miniMap = new MiniMap(game);
@@ -55,7 +55,7 @@ public class MainPanel extends JPanel {
 
         EvolveListener evolveListener = new EvolveListener(headerPanel, gameFieldPanel, game);
         OccupyListener occupyListener = new OccupyListener(new ArrayList<>(Arrays.asList(gameFieldPanel, miniMap, informationPanel, headerPanel)), game);
-        ConvertListener convertListener = new ConvertListener(informationPanel, gameFieldPanel, headerPanel);
+        ConvertListener convertListener = new ConvertListener(gameFieldPanel, headerPanel);
         Map<String, ActionListener> listeners = new HashMap<>();
         listeners.put("occupy", occupyListener);
         listeners.put("evolve", evolveListener);

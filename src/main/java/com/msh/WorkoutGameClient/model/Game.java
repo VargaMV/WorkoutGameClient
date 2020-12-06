@@ -18,8 +18,10 @@ public class Game {
     private Map<String, Exercise> exerciseValues = new LinkedHashMap<>();
     private int waitingTime;
     private double priceIncExponent;
-
     private boolean retrievedDataFromServer = false;
+
+    private int lastConvert = 0;
+    private NamedAmount lastSave = new NamedAmount("", 0);
 
     public Game() {
 

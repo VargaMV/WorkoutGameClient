@@ -2,6 +2,7 @@ package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.exceptions.NegativeNumberException;
 import com.msh.WorkoutGameClient.model.Exercise;
+import com.msh.WorkoutGameClient.model.NamedAmount;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -24,7 +25,7 @@ class WorkoutPanel extends JPanel {
         this.game = game;
         this.wsm = wsm;
         setLayout(new BorderLayout());
-        headerPanel = new Header(game, wsm);
+        headerPanel = new Header(game, wsm, "workout");
 
         body = new JPanel();
         body.setLayout(new GridBagLayout());
@@ -72,9 +73,12 @@ class WorkoutPanel extends JPanel {
                     updateContent();
                     updateHeaderPanel();
                     wsm.sendExerciseDone(exercise, reps);
+                    game.setLastSave(new NamedAmount(exercise, reps));
                 } catch (NumberFormatException | NegativeNumberException ex) {
                     inputFields[finalI].setText("");
                 }
+                updateContent();
+                updateHeaderPanel();
             });
             inputFields[i] = new JTextField();
 

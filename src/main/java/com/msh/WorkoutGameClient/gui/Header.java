@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.logic.ColorConverter;
+import com.msh.WorkoutGameClient.model.NamedAmount;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -18,10 +19,13 @@ public class Header extends JPanel {
     private JLabel moneyLabel;
     private JLabel scoreLabel;
     private JLabel fieldsLabel;
+    private JButton undoButton;
+    private String panelName = "";
 
-    public Header(Game game, WebSocketManager wsm) {
+    public Header(Game game, WebSocketManager wsm, String panelName) {
         this.game = game;
         this.wsm = wsm;
+        this.panelName = panelName;
         setLayout(new FlowLayout(FlowLayout.LEFT, 15, 5));
         setPreferredSize(new Dimension(500, 60));
 
@@ -37,6 +41,21 @@ public class Header extends JPanel {
             label.setPreferredSize(new Dimension(250, 50));
             label.setFont(new Font("Arial", Font.PLAIN, 24));
             add(label);
+        }
+
+        switch (panelName) {
+            case "main":
+                undoButton = new JButton("Undo convert");
+                undoButton.setPreferredSize(new Dimension(120, 30));
+                add(undoButton);
+                break;
+            case "workout":
+                undoButton = new JButton("Undo save");
+                undoButton.setPreferredSize(new Dimension(120, 30));
+                add(undoButton);
+                break;
+            default:
+                break;
         }
 
         setVisible(true);
@@ -55,5 +74,37 @@ public class Header extends JPanel {
 
         fieldsLabel.setText("fields: " + game.getMe().getFieldsOwned());
         fieldsLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
+
+        boolean enableUndoButton;
+        switch (panelName) {
+            case "main":
+                enableUndoButton = game.getLastConvert() > 0;
+                if (enableUndoButton) {
+                    undoButton.addActionListener(e -> {
+                        wsm.sendConvert((-1) * game.getLastConvert());
+                        game.convertScoreToMoney((-1) * game.getLastConvert());
+                        game.setLastConvert(0);
+                        updateHeader();
+                    });
+                }
+                undoButton.setEnabled(enableUndoButton);
+                break;
+            case "workout":
+                NamedAmount lastSave = game.getLastSave();
+                enableUndoButton = lastSave.getAmount() > 0;
+                if (enableUndoButton) {
+                    undoButton.addActionListener(e -> {
+                        wsm.sendExerciseDone(lastSave.getName(), (-1) * lastSave.getAmount());
+                        game.exerciseDone(lastSave.getName(), (-1) * lastSave.getAmount());
+                        game.setLastSave(new NamedAmount("", 0));
+                        updateHeader();
+                    });
+                }
+                undoButton.setEnabled(enableUndoButton);
+                break;
+            default:
+                break;
+        }
+
     }
 }

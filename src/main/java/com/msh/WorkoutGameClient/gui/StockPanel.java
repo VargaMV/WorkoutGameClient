@@ -52,7 +52,7 @@ public class StockPanel extends JPanel {
         this.wsm = wsm;
         setLayout(new BorderLayout());
 
-        headerPanel = new Header(game, wsm);
+        headerPanel = new Header(game, wsm, "stock");
         add(headerPanel, BorderLayout.NORTH);
 
         body = new JPanel();

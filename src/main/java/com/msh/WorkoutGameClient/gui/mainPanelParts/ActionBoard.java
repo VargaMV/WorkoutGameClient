@@ -60,6 +60,7 @@ public class ActionBoard extends JPanel {
                 game.convertScoreToMoney(amountConverted);
                 moneyInput.setText("");
                 messageLabel.setText("");
+                game.setLastConvert(amountConverted);
                 updateButtons();
             } catch (NumberFormatException | NegativeNumberException ex) {
                 if ("".equals(moneyInput.getText())) {
