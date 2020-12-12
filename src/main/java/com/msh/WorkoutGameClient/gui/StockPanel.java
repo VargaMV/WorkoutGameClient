@@ -90,7 +90,10 @@ public class StockPanel extends JPanel {
             exerciseLabels[i] = new JLabel();
             exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
             buyButtons[i] = new JButton("");
-            buyButtons[i].addActionListener(e -> wsm.sendStockBought(exercise));
+            buyButtons[i].addActionListener(e -> {
+                wsm.sendStockBought(exercise);
+                game.setLastConvert(0);
+            });
             buyButtons[i].setPreferredSize(new Dimension(100, 30));
 
             int col = 0;

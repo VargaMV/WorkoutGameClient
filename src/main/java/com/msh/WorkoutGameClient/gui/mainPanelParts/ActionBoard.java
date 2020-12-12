@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.gui.mainPanelParts;
 
 import com.msh.WorkoutGameClient.exceptions.NegativeNumberException;
+import com.msh.WorkoutGameClient.model.NamedAmount;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
 import com.msh.WorkoutGameClient.model.Game;
 
@@ -32,6 +33,8 @@ public class ActionBoard extends JPanel {
         occupyButton.addActionListener(e -> {
             game.occupyOrIncrease();
             wsm.sendOccupy(game.getMe().getPosition());
+            game.setLastConvert(0);
+            game.setLastSave(new NamedAmount("", 0));
             updateButtons();
         });
         add(occupyButton);
@@ -49,6 +52,7 @@ public class ActionBoard extends JPanel {
         convertButton.setBounds(290, 10, 100, 30);
         convertButton.addActionListener(listeners.get("convert"));
         convertButton.addActionListener(e -> {
+            game.setLastSave(new NamedAmount("", 0));
             int currentScore = game.getMe().getCurrentScore();
             try {
                 int amountConverted = Integer.parseInt(moneyInput.getText());
@@ -64,6 +68,7 @@ public class ActionBoard extends JPanel {
                 updateButtons();
             } catch (NumberFormatException | NegativeNumberException ex) {
                 if ("".equals(moneyInput.getText())) {
+                    game.setLastConvert(currentScore);
                     wsm.sendConvert(currentScore);
                     game.convertScoreToMoney(currentScore);
                     updateButtons();

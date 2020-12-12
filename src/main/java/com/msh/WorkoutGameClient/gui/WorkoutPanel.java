@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.gui;
 
 import com.msh.WorkoutGameClient.exceptions.NegativeNumberException;
+import com.msh.WorkoutGameClient.gui.listener.ExerciseListener;
 import com.msh.WorkoutGameClient.model.Exercise;
 import com.msh.WorkoutGameClient.model.NamedAmount;
 import com.msh.WorkoutGameClient.websocket.WebSocketManager;
@@ -9,7 +10,7 @@ import com.msh.WorkoutGameClient.model.Game;
 import javax.swing.*;
 import java.awt.*;
 
-class WorkoutPanel extends JPanel {
+public class WorkoutPanel extends JPanel {
 
     private final Game game;
     private WebSocketManager wsm;
@@ -20,12 +21,15 @@ class WorkoutPanel extends JPanel {
     private JLabel[] valueLabels;
     private JButton[] saveButtons;
     private JTextField[] inputFields;
+    private ExerciseListener exerciseListener;
 
-    WorkoutPanel(Game game, WebSocketManager wsm) {
+    public WorkoutPanel(Game game, WebSocketManager wsm) {
         this.game = game;
         this.wsm = wsm;
         setLayout(new BorderLayout());
         headerPanel = new Header(game, wsm, "workout");
+        exerciseListener = new ExerciseListener(this, headerPanel);
+        headerPanel.setExerciseListener(exerciseListener);
 
         body = new JPanel();
         body.setLayout(new GridBagLayout());
@@ -61,6 +65,7 @@ class WorkoutPanel extends JPanel {
             valueLabels[i].setHorizontalAlignment(SwingConstants.CENTER);
             saveButtons[i] = new JButton("Save");
             int finalI = i;
+            saveButtons[i].addActionListener(exerciseListener);
             saveButtons[i].addActionListener(e -> {
                 double reps;
                 try {
@@ -70,15 +75,13 @@ class WorkoutPanel extends JPanel {
                     }
                     game.exerciseDone(exercise, reps);
                     inputFields[finalI].setText("");
-                    updateContent();
-                    updateHeaderPanel();
+                    //updateContent();
+                    //updateHeaderPanel();
                     wsm.sendExerciseDone(exercise, reps);
                     game.setLastSave(new NamedAmount(exercise, reps));
                 } catch (NumberFormatException | NegativeNumberException ex) {
                     inputFields[finalI].setText("");
                 }
-                updateContent();
-                updateHeaderPanel();
             });
             inputFields[i] = new JTextField();
 
@@ -125,7 +128,7 @@ class WorkoutPanel extends JPanel {
         }
     }
 
-    void updateContent() {
+    public void updateContent() {
         int i = 0;
         for (var entry : game.getExerciseValues().entrySet()) {
             String exerciseName = entry.getKey();
