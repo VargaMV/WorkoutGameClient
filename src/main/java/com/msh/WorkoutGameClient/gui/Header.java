@@ -81,7 +81,7 @@ public class Header extends JPanel {
         scoreLabel.setText("score: " + game.getMe().getCurrentScore());
         scoreLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
 
-        moneyLabel.setText("money: $" + game.getMe().getMoney());
+        moneyLabel.setText(String.format("money: $%.2f", game.getMe().getMoney()));
         moneyLabel.setForeground(ColorConverter.determineTextColor(game.getMe().getColor()));
 
         fieldsLabel.setText("fields: " + game.getMe().getFieldsOwned());

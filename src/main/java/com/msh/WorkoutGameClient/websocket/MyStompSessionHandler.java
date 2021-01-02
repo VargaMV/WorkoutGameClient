@@ -60,20 +60,17 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                 return GamesResponse.class;
             }
             if (destination[1].equals("public")) {
-                switch (destination[2]) {
-                    case "map":
-                        return MapResponse.class;
-                    case "stock":
-                        return StockResponse.class;
-                    default:
-                        return SimpleResponse.class;
-                }
+                return SimpleResponse.class;
             } else if (destination[1].equals("private")) {
                 switch (destination[3]) {
                     case "game":
                         return GameResponse.class;
                     case "player":
                         return PlayerResponse.class;
+                    case "map":
+                        return MapResponse.class;
+                    case "stock":
+                        return StockResponse.class;
                     default:
                         return SimpleResponse.class;
                 }
@@ -107,7 +104,6 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
                     GameResponse gameMsg = (GameResponse) payload;
                     Game game = gameMsg.getGame();
                     this.game.setServerGameState(game);
-                    PriceCalculator.exponent = game.getPriceIncExponent();
                     ((MainFrame) gui).createMenuBar();
                     ((MainFrame) gui).initPanels();
                     ((MainFrame) gui).updatePanels();

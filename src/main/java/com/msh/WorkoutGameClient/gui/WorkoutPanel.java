@@ -75,8 +75,6 @@ public class WorkoutPanel extends JPanel {
                     }
                     game.exerciseDone(exercise, reps);
                     inputFields[finalI].setText("");
-                    //updateContent();
-                    //updateHeaderPanel();
                     wsm.sendExerciseDone(exercise, reps);
                     game.setLastSave(new NamedAmount(exercise, reps));
                 } catch (NumberFormatException | NegativeNumberException ex) {

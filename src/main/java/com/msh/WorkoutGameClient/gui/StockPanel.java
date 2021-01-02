@@ -91,7 +91,7 @@ public class StockPanel extends JPanel {
             exerciseLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
             buyButtons[i] = new JButton("");
             buyButtons[i].addActionListener(e -> {
-                wsm.sendStockBought(exercise);
+                wsm.sendStockBought(exercise, 1);
                 game.setLastConvert(0);
             });
             buyButtons[i].setPreferredSize(new Dimension(100, 30));
@@ -118,12 +118,12 @@ public class StockPanel extends JPanel {
         int i = 0;
         for (var exercise : game.getTotalStockNumbers().keySet()) {
             int stockNumber = game.getMe().getStockNumbers().get(exercise);
-            int price = game.getMe().getNextPrice(exercise);
+            double price = game.getNextPrice(exercise);
             int all = game.getTotalStockNumbers().get(exercise);
             int share = game.getSharePercentage(exercise);
             exerciseLabels[i].setText(String.format("%s  >>>  Share: %d %% (%d / %d)", exercise, share, stockNumber, all));
-            buyButtons[i].setEnabled(game.getMe().isStockAffordable(exercise));
-            buyButtons[i].setText(String.format("Buy ($%d)", price));
+            buyButtons[i].setEnabled(game.isStockAffordable(exercise));
+            buyButtons[i].setText(String.format("Buy ($%.2f)", price));
             i++;
         }
         bars.repaint();

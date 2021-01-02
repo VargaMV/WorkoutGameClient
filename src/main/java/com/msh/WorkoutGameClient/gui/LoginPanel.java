@@ -172,10 +172,11 @@ public class LoginPanel extends JPanel {
         gamesPanel.removeAll();
         for (var game : games) {
             JButton gameButton = new JButton();
+            String state = game.isRunning() ? "Running" : (game.isSubOn() ? "Subscription phase" : "");
             gameButton.setText(
                     String.format(
-                            "Name: %s, Running: %b, Sub: %b, player number: %d",
-                            game.getTitle(), game.isRunning(), game.isSubOn(), game.getPlayerNumber()
+                            "Name: %s, %s, player number: %d",
+                            game.getTitle(), state, game.getPlayerNumber()
                     )
             );
             gameButton.addActionListener(e -> {

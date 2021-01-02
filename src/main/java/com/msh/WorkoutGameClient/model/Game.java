@@ -1,6 +1,7 @@
 package com.msh.WorkoutGameClient.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.msh.WorkoutGameClient.logic.PriceCalculator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,7 @@ public class Game {
     private Map<String, Integer> totalStockNumbers = new LinkedHashMap<>();
     private Map<String, Exercise> exerciseValues = new LinkedHashMap<>();
     private int waitingTime;
-    private double priceIncExponent;
+    private double priceIncBase;
     private boolean retrievedDataFromServer = false;
 
     private int lastConvert = 0;
@@ -34,7 +35,7 @@ public class Game {
         totalStockNumbers = game.getTotalStockNumbers();
         exerciseValues = game.getExerciseValues();
         waitingTime = game.getWaitingTime();
-        priceIncExponent = game.getPriceIncExponent();
+        priceIncBase = game.getPriceIncBase();
         retrievedDataFromServer = true;
 
     }
@@ -92,7 +93,9 @@ public class Game {
     public void exerciseDone(String exercise, double amount) {
         int roundedAmount = (int) Math.round(amount - 0.25);
         me.incExerciseValue(exercise, roundedAmount);
-        me.incScore((int) Math.ceil(exerciseValues.get(exercise).getValue() * getSharePercentage(exercise) / 100.0) * roundedAmount);
+        int all = totalStockNumbers.get(exercise);
+        int own = me.getStockNumbers().get(exercise);
+        me.incScore((int) Math.ceil(exerciseValues.get(exercise).getValue() * (own / (double) all)) * roundedAmount);
     }
 
     public int getSharePercentage(String exercise) {
@@ -118,6 +121,14 @@ public class Game {
 
     public void secondPast() {
         me.setSecondsUntilMove(Math.max(0, me.getSecondsUntilMove() - 1));
+    }
+
+    public boolean isStockAffordable(String exercise) {
+        return me.getMoney() >= PriceCalculator.calculateNextN(me.getStockNumbers().get(exercise), priceIncBase, 1);
+    }
+
+    public double getNextPrice(String exercise) {
+        return PriceCalculator.calculateNextN(me.getStockNumbers().get(exercise), priceIncBase, 1);
     }
 
     @Override

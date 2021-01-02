@@ -65,8 +65,8 @@ public class WebSocketManager {
     }
 
     public void join(String name, String password, String gameId) {
-        session.subscribe("/public/map/" + gameId, sessionHandler);
-        session.subscribe("/public/stock/" + gameId, sessionHandler);
+        session.subscribe("/private/" + name + "/map", sessionHandler);
+        session.subscribe("/private/" + name + "/stock", sessionHandler);
         session.subscribe("/private/" + name + "/connection", sessionHandler);
         session.subscribe("/private/" + name + "/connection/" + gameId, sessionHandler);
         session.subscribe("/private/" + name + "/game/" + gameId, sessionHandler);
@@ -83,8 +83,8 @@ public class WebSocketManager {
         session.send("/app/action/occupy", new OccupationMessage(game.getMe().getName(), "I have a new field!", field));
     }
 
-    public void sendStockBought(String exercise) {
-        session.send("/app/action/stock", new Message(MessageType.STOCK, game.getMe().getName(), exercise));
+    public void sendStockBought(String exercise, int amount) {
+        session.send("/app/action/stock", new BuyMessage(game.getMe().getName(), "Give me that stock!", exercise, amount));
     }
 
     public void sendExerciseDone(String exercise, double amount) {
